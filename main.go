@@ -122,7 +122,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
         }
 
         if m.Content == "!top10" {
-                TopTen()
+                TopTen(m.ChannelID)
         }
 
         // ToDo: Add parameter (botname)
@@ -143,14 +143,14 @@ type TopTenStruct struct {
     Name  string `json:"name"`
 }
 
-func TopTen() {
+func TopTen(ChannelID string) {
         db, err := sql.Open("mysql", configuration.MysqlUser + ":" + configuration.MysqlPass + "@tcp(" + configuration.MysqlHost + ")/" + configuration.MysqlDB)
         if err != nil {
                 log.Print(err.Error())
         }
         defer db.Close()
 
-        results, err := db.Query("SELECT name,elo FROM aiarena_beta.core_bot order by elo desc limit 10")
+        results, err := db.Query("SELECT name,elo FROM aiarena_beta.core_bot where active = 1 order by elo desc limit 10")
         if err != nil {
                 panic(err.Error())
         }
@@ -174,5 +174,5 @@ func TopTen() {
                 Timestamp: time.Now().Format(time.RFC3339),
         }
 
-        dg.ChannelMessageSendEmbed("571643904869269515", TopTenReply)
+        dg.ChannelMessageSendEmbed(ChannelID, TopTenReply)
 }
