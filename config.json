@@ -1,0 +1,9 @@
+{
+  "WebServerPort": ":8880",
+  "DiscordBotToken": "abc",
+  "MysqlHost": "127.0.0.1:3306",
+  "MysqlDB": "aiarena",
+  "MysqlUser": "aiarena",
+  "MysqlPass": "aiarena",
+  "TwitchClientID": "abc"
+}
