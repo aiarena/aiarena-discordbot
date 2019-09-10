@@ -121,6 +121,11 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
                 s.ChannelMessageSend(m.ChannelID, "Stream URL: <https://www.twitch.tv/aiarenastream>")
         }
 
+        if m.Content == "!trello" {
+                s.ChannelMessageSend(m.ChannelID,
+                "Trello boards:\nGeneral/misc: <https://trello.com/b/ykMT2vyR/ai-arena-general>\nWebsite: <https://trello.com/b/qw4DYU9H/ai-arena-website>\nArena Client: <https://trello.com/b/a7cUfzl0/ai-arena-client>\nDevop: <https://trello.com/b/Tu2GR6gn/ai-arena-devop>")
+        }
+
         if m.Content == "!top10" {
                 TopTen(m.ChannelID)
         }
