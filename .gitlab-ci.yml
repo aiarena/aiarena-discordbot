@@ -15,7 +15,7 @@ stages:
 compile:
   stage: build
   script:
-    - go get github.com/bwmarrin/discordgo && go get github.com/go-sql-driver/mysql && go get github.com/tkanos/gonfig && go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/aiarena-discordbot
+    - go get github.com/bwmarrin/discordgo && go get github.com/go-sql-driver/mysql && go get github.com/spf13/viper && go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/aiarena-discordbot
   artifacts:
     paths:
       - aiarena-discordbot
