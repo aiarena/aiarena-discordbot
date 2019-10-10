@@ -6,4 +6,5 @@
   "MysqlUser": "aiarena",
   "MysqlPass": "aiarena",
   "TwitchClientID": "abc"
+  "MeleeChampion": "123456"
 }
