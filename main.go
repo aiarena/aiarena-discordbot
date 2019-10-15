@@ -141,6 +141,15 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
                         param := strings.Split(m.Content, " ")[1]
                         BotInfo(param, m.ChannelID)
                 }
+
+				if method == "trello" {
+					s.ChannelMessageSend(m.ChannelID,
+						"Trello boards:\n" +
+							"General/misc: [board](https://trello.com/b/ykMT2vyR/ai-arena-general)\n" +
+							"Website: [board](https://trello.com/b/qw4DYU9H/ai-arena-website)\n" +
+							"Arena Client: [board](https://trello.com/b/a7cUfzl0/ai-arena-client)\n" +
+							"Devop: [board](https://trello.com/b/Tu2GR6gn/ai-arena-devop)")
+				}
         }
 }
 
