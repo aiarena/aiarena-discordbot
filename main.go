@@ -93,7 +93,7 @@ func handleResultPost(w http.ResponseWriter, r *http.Request) {
         if result.Bot_a == result.Winner {
                 embed := &discordgo.MessageEmbed {
                         Color: 11534336, // Red Colour
-                        Description: "Round [" + strconv.Itoa(result.RoundId) + "](https://ai-arena.net/round/" + strconv.Itoa(result.RoundId) + "/) - Match [" + strconv.Itoa(result.MatchId) + "](https://ai-arena.net/matches/" + strconv.Itoa(result.MatchId) + "/) - [**" + result.Bot_a + "**](https://ai-arena.net/bots/" + strconv.Itoa(result.Bot_a_id) + "/) vs [" + result.Bot_b + "](https://ai-arena.net/bots/" + strconv.Itoa(result.Bot_b_id) + "/) - [Download Replay](https://ai-arena.net" + result.Replay + ")",
+                        Description: "Round [" + strconv.Itoa(result.RoundId) + "](https://ai-arena.net/rounds/" + strconv.Itoa(result.RoundId) + "/) - Match [" + strconv.Itoa(result.MatchId) + "](https://ai-arena.net/matches/" + strconv.Itoa(result.MatchId) + "/) - [**" + result.Bot_a + "**](https://ai-arena.net/bots/" + strconv.Itoa(result.Bot_a_id) + "/) vs [" + result.Bot_b + "](https://ai-arena.net/bots/" + strconv.Itoa(result.Bot_b_id) + "/) - [Download Replay](https://ai-arena.net" + result.Replay + ")",
                 }
                 dg.ChannelMessageSendEmbed("571643904869269515", embed)
 
