@@ -262,7 +262,7 @@ func BotInfo(botname string, ChannelID string) {
 		} else { // No exact match found
 			partial_match_count := 0
 
-			botname_len = len(botname)
+			botname_len := len(botname)
 			err = db.Query("SELECT count(*) as partial_match_count FROM aiarena_beta.core_bot where LEFT(name, ?) = ?", botname_len, botname).Scan(&partial_match_count)
 			if err != nil {
 				panic(err.Error())
