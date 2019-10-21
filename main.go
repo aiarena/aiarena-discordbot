@@ -146,8 +146,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 						params := strings.Split(params_str, " ")
 						if len(params) == 2 {
 							BotInfo(params[1], m.ChannelID)
+						} else {
+							BotInfoUsage(m.ChannelID)
 						}
-						BotInfoUsage(m.ChannelID)
                 }
 
 		if method == "trello" {
