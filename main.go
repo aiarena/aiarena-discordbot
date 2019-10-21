@@ -154,10 +154,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if method == "trello" {
 			s.ChannelMessageSend(m.ChannelID,
 				"Trello boards:\n" +
-				"General/misc: [board](https://trello.com/b/ykMT2vyR/ai-arena-general)\n" +
-				"Website: [board](https://trello.com/b/qw4DYU9H/ai-arena-website)\n" +
-				"Arena Client: [board](https://trello.com/b/a7cUfzl0/ai-arena-client)\n" +
-				"Devop: [board](https://trello.com/b/Tu2GR6gn/ai-arena-devop)")
+				"General/misc: https://trello.com/b/ykMT2vyR/ai-arena-general\n" +
+				"Website: https://trello.com/b/qw4DYU9H/ai-arena-website\n" +
+				"Arena Client: https://trello.com/b/a7cUfzl0/ai-arena-client\n" +
+				"Devop: https://trello.com/b/Tu2GR6gn/ai-arena-devop")
 		}
         }
 }
