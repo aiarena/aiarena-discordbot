@@ -179,13 +179,19 @@ func BotInfo(botname string, ChannelID string) {
         }
         defer db.Close()
 
-		exact_match_count := 0
-
         // First check whether there's an exact match. If there isn't, we'll try a partial match
-		err = db.Query("SELECT count(*) as exact_match_count FROM aiarena_beta.core_bot where name = ?", botname).Scan(&exact_match_count)
+		exact_match_count_results, err := db.Query("SELECT count(*) as exact_match_count FROM aiarena_beta.core_bot where name = ?", botname)
         if err != nil {
                 panic(err.Error())
         }
+
+		exact_match_count := 0
+		for exact_match_count_results.Next() {
+			err = exact_match_count_results.Scan(&exact_match_count)
+			if err != nil {
+				panic(err.Error())
+			}
+		}
 
         if exact_match_count == 1 {
 			botresults, err := db.Query("SELECT name, created, elo, plays_race, type, user_id, id FROM aiarena_beta.core_bot where name = ?", botname)
@@ -260,12 +266,19 @@ func BotInfo(botname string, ChannelID string) {
 
 			dg.ChannelMessageSendEmbed(ChannelID, BotInfoReply)
 		} else { // No exact match found
-			partial_match_count := 0
 
 			botname_len := len(botname)
-			err = db.Query("SELECT count(*) as partial_match_count FROM aiarena_beta.core_bot where LEFT(name, ?) = ?", botname_len, botname).Scan(&partial_match_count)
+			partial_match_count_results, err := db.Query("SELECT count(*) as partial_match_count FROM aiarena_beta.core_bot where LEFT(name, ?) = ?", botname_len, botname)
 			if err != nil {
 				panic(err.Error())
+			}
+
+			partial_match_count := 0
+			for partial_match_count_results.Next() {
+				err = partial_match_count_results.Scan(&partial_match_count)
+				if err != nil {
+					panic(err.Error())
+				}
 			}
 
 			if partial_match_count == 1 { // dump that bot's info
