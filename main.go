@@ -1,6 +1,7 @@
 package main
 
 import (
+	    "unicode/utf8"
 		"bytes"
         "fmt"
         "os"
@@ -173,116 +174,29 @@ type AuthorAvatarStruct struct {
 }
 
 func BotInfo(botname string, ChannelID string) {
-        db, err := sql.Open("mysql", viper.GetString("MysqlUser") + ":" + viper.GetString("MysqlPass") + "@tcp(" + viper.GetString("MysqlHost") + ")/" + viper.GetString("MysqlDB"))
-        if err != nil {
-                log.Print(err.Error())
-        }
-        defer db.Close()
-
-        // First check whether there's an exact match. If there isn't, we'll try a partial match
-		exact_match_count_results, err := db.Query("SELECT count(*) as exact_match_count FROM aiarena_beta.core_bot where name = ?", botname)
-        if err != nil {
-                panic(err.Error())
-        }
-
-		exact_match_count := 0
-		for exact_match_count_results.Next() {
-			err = exact_match_count_results.Scan(&exact_match_count)
+		if utf8.Valid([]byte(botname)) {
+			db, err := sql.Open("mysql", viper.GetString("MysqlUser")+":"+viper.GetString("MysqlPass")+"@tcp("+viper.GetString("MysqlHost")+")/"+viper.GetString("MysqlDB"))
 			if err != nil {
-				panic(err.Error())
+				log.Print(err.Error())
 			}
-		}
+			defer db.Close()
 
-        if exact_match_count == 1 {
-			botresults, err := db.Query("SELECT name, created, elo, plays_race, type, user_id, id FROM aiarena_beta.core_bot where name = ?", botname)
+			// First check whether there's an exact match. If there isn't, we'll try a partial match
+			exact_match_count_results, err := db.Query("SELECT count(*) as exact_match_count FROM aiarena_beta.core_bot where name = ?", botname)
 			if err != nil {
 				panic(err.Error())
 			}
 
-			var botdata BotInfoStruct
-			for botresults.Next() {
-				err = botresults.Scan(&botdata.Name, &botdata.Created, &botdata.Elo, &botdata.Race, &botdata.Type, &botdata.UserID, &botdata.BotID)
+			exact_match_count := 0
+			for exact_match_count_results.Next() {
+				err = exact_match_count_results.Scan(&exact_match_count)
 				if err != nil {
 					panic(err.Error())
 				}
 			}
 
-			authorresults, err := db.Query("SELECT username FROM aiarena_beta.core_user where id = ?", &botdata.UserID)
-			if err != nil {
-				panic(err.Error())
-			}
-
-			var authordata AuthorInfoStruct
-			for authorresults.Next() {
-				err = authorresults.Scan(&authordata.Name)
-				if err != nil {
-					panic(err.Error())
-				}
-			}
-
-			avatarresults, err := db.Query("SELECT avatar FROM aiarena_beta.avatar_avatar where user_id = ? and `primary` = 1", &botdata.UserID)
-			if err != nil {
-				panic(err.Error())
-			}
-
-			var avatardata AuthorAvatarStruct
-			for avatarresults.Next() {
-				err = avatarresults.Scan(&avatardata.Avatar)
-				if err != nil {
-					panic(err.Error())
-				}
-			}
-
-			fullrace := "None"
-			if botdata.Race == "R" {
-				fullrace = "Random"
-			} else if botdata.Race == "T" {
-				fullrace = "Terran"
-			} else if botdata.Race == "P" {
-				fullrace = "Protoss"
-			} else if botdata.Race == "Z" {
-				fullrace = "Zerg"
-			}
-
-			BotInfoReply := &discordgo.MessageEmbed {
-				Color: 11534336,
-				Title: botdata.Name,
-				Description: "Author: " + authordata.Name  + "\nRace: " + fullrace + "\nCreated: " + botdata.Created + "\nELO: " + strconv.Itoa(botdata.Elo) + "\nType: " + botdata.Type,
-				Thumbnail: &discordgo.MessageEmbedThumbnail{
-					URL: "https://ai-arena.net/media/" + avatardata.Avatar,
-				},
-				Image: &discordgo.MessageEmbedImage{
-					URL: "https://ai-arena.net/media/graphs/" + strconv.Itoa(botdata.BotID) + "_" + botdata.Name + ".png",
-				},
-			}
-
-			dg.ChannelMessageSendEmbed(ChannelID, BotInfoReply)
-        } else if exact_match_count > 1 {
-        	BotInfoReply := &discordgo.MessageEmbed {
-				Color: 11534336,
-				Title: "Error",
-				Description: "That's weird. Multiple bots matched that name exactly. This is an error. Kindly please let a staff member know.",
-			}
-
-			dg.ChannelMessageSendEmbed(ChannelID, BotInfoReply)
-		} else { // No exact match found
-
-			botname_len := len(botname)
-			partial_match_count_results, err := db.Query("SELECT count(*) as partial_match_count FROM aiarena_beta.core_bot where LEFT(name, ?) = ?", botname_len, botname)
-			if err != nil {
-				panic(err.Error())
-			}
-
-			partial_match_count := 0
-			for partial_match_count_results.Next() {
-				err = partial_match_count_results.Scan(&partial_match_count)
-				if err != nil {
-					panic(err.Error())
-				}
-			}
-
-			if partial_match_count == 1 { // dump that bot's info
-				botresults, err := db.Query("SELECT name, created, elo, plays_race, type, user_id, id FROM aiarena_beta.core_bot where LEFT(name, ?) = ?", botname_len, botname)
+			if exact_match_count == 1 {
+				botresults, err := db.Query("SELECT name, created, elo, plays_race, type, user_id, id FROM aiarena_beta.core_bot where name = ?", botname)
 				if err != nil {
 					panic(err.Error())
 				}
@@ -332,10 +246,10 @@ func BotInfo(botname string, ChannelID string) {
 					fullrace = "Zerg"
 				}
 
-				BotInfoReply := &discordgo.MessageEmbed {
-					Color: 11534336,
-					Title: botdata.Name,
-					Description: "Author: " + authordata.Name  + "\nRace: " + fullrace + "\nCreated: " + botdata.Created + "\nELO: " + strconv.Itoa(botdata.Elo) + "\nType: " + botdata.Type,
+				BotInfoReply := &discordgo.MessageEmbed{
+					Color:       11534336,
+					Title:       botdata.Name,
+					Description: "Author: " + authordata.Name + "\nRace: " + fullrace + "\nCreated: " + botdata.Created + "\nELO: " + strconv.Itoa(botdata.Elo) + "\nType: " + botdata.Type,
 					Thumbnail: &discordgo.MessageEmbedThumbnail{
 						URL: "https://ai-arena.net/media/" + avatardata.Avatar,
 					},
@@ -345,42 +259,138 @@ func BotInfo(botname string, ChannelID string) {
 				}
 
 				dg.ChannelMessageSendEmbed(ChannelID, BotInfoReply)
+			} else if exact_match_count > 1 {
+				BotInfoReply := &discordgo.MessageEmbed{
+					Color:       11534336,
+					Title:       "Error",
+					Description: "That's weird. Multiple bots matched that name exactly. This is an error. Kindly please let a staff member know.",
+				}
 
-			} else if partial_match_count > 1 {
-				botresults, err := db.Query("SELECT name FROM aiarena_beta.core_bot where LEFT(name, ?) = ?", botname_len, botname)
+				dg.ChannelMessageSendEmbed(ChannelID, BotInfoReply)
+			} else { // No exact match found
+
+				botname_len := len(botname)
+				partial_match_count_results, err := db.Query("SELECT count(*) as partial_match_count FROM aiarena_beta.core_bot where LEFT(name, ?) = ?", botname_len, botname)
 				if err != nil {
 					panic(err.Error())
 				}
 
-				bot_names_buffer := bytes.Buffer{}
-				var bot_name string
-				for botresults.Next() {
-					err = botresults.Scan(&bot_name)
+				partial_match_count := 0
+				for partial_match_count_results.Next() {
+					err = partial_match_count_results.Scan(&partial_match_count)
 					if err != nil {
 						panic(err.Error())
 					}
-					bot_names_buffer.WriteString(bot_name)
-					bot_names_buffer.WriteString("\n")
 				}
 
+				if partial_match_count == 1 { // dump that bot's info
+					botresults, err := db.Query("SELECT name, created, elo, plays_race, type, user_id, id FROM aiarena_beta.core_bot where LEFT(name, ?) = ?", botname_len, botname)
+					if err != nil {
+						panic(err.Error())
+					}
 
-				BotInfoReply := &discordgo.MessageEmbed {
-					Color: 11534336,
-					Title: "Multiple bots",
-					Description: "That query returned multiple bots:\n" + bot_names_buffer.String(),
+					var botdata BotInfoStruct
+					for botresults.Next() {
+						err = botresults.Scan(&botdata.Name, &botdata.Created, &botdata.Elo, &botdata.Race, &botdata.Type, &botdata.UserID, &botdata.BotID)
+						if err != nil {
+							panic(err.Error())
+						}
+					}
+
+					authorresults, err := db.Query("SELECT username FROM aiarena_beta.core_user where id = ?", &botdata.UserID)
+					if err != nil {
+						panic(err.Error())
+					}
+
+					var authordata AuthorInfoStruct
+					for authorresults.Next() {
+						err = authorresults.Scan(&authordata.Name)
+						if err != nil {
+							panic(err.Error())
+						}
+					}
+
+					avatarresults, err := db.Query("SELECT avatar FROM aiarena_beta.avatar_avatar where user_id = ? and `primary` = 1", &botdata.UserID)
+					if err != nil {
+						panic(err.Error())
+					}
+
+					var avatardata AuthorAvatarStruct
+					for avatarresults.Next() {
+						err = avatarresults.Scan(&avatardata.Avatar)
+						if err != nil {
+							panic(err.Error())
+						}
+					}
+
+					fullrace := "None"
+					if botdata.Race == "R" {
+						fullrace = "Random"
+					} else if botdata.Race == "T" {
+						fullrace = "Terran"
+					} else if botdata.Race == "P" {
+						fullrace = "Protoss"
+					} else if botdata.Race == "Z" {
+						fullrace = "Zerg"
+					}
+
+					BotInfoReply := &discordgo.MessageEmbed{
+						Color:       11534336,
+						Title:       botdata.Name,
+						Description: "Author: " + authordata.Name + "\nRace: " + fullrace + "\nCreated: " + botdata.Created + "\nELO: " + strconv.Itoa(botdata.Elo) + "\nType: " + botdata.Type,
+						Thumbnail: &discordgo.MessageEmbedThumbnail{
+							URL: "https://ai-arena.net/media/" + avatardata.Avatar,
+						},
+						Image: &discordgo.MessageEmbedImage{
+							URL: "https://ai-arena.net/media/graphs/" + strconv.Itoa(botdata.BotID) + "_" + botdata.Name + ".png",
+						},
+					}
+
+					dg.ChannelMessageSendEmbed(ChannelID, BotInfoReply)
+
+				} else if partial_match_count > 1 {
+					botresults, err := db.Query("SELECT name FROM aiarena_beta.core_bot where LEFT(name, ?) = ?", botname_len, botname)
+					if err != nil {
+						panic(err.Error())
+					}
+
+					bot_names_buffer := bytes.Buffer{}
+					var bot_name string
+					for botresults.Next() {
+						err = botresults.Scan(&bot_name)
+						if err != nil {
+							panic(err.Error())
+						}
+						bot_names_buffer.WriteString(bot_name)
+						bot_names_buffer.WriteString("\n")
+					}
+
+					BotInfoReply := &discordgo.MessageEmbed{
+						Color:       11534336,
+						Title:       "Multiple bots",
+						Description: "That query returned multiple bots:\n" + bot_names_buffer.String(),
+					}
+
+					dg.ChannelMessageSendEmbed(ChannelID, BotInfoReply)
+
+				} else {
+					BotInfoReply := &discordgo.MessageEmbed{
+						Color:       11534336,
+						Title:       "No bots",
+						Description: "Sorry, that query returned no matching bots.",
+					}
+
+					dg.ChannelMessageSendEmbed(ChannelID, BotInfoReply)
 				}
-
-				dg.ChannelMessageSendEmbed(ChannelID, BotInfoReply)
-
-			} else {
-				BotInfoReply := &discordgo.MessageEmbed {
-					Color: 11534336,
-					Title: "No bots",
-					Description: "Sorry, that query returned no matching bots.",
-				}
-
-				dg.ChannelMessageSendEmbed(ChannelID, BotInfoReply)
 			}
+		} else {
+			BotInfoReply := &discordgo.MessageEmbed{
+				Color:       11534336,
+				Title:       "Invalid query",
+				Description: "Sorry, that query didn't make sense to me.",
+			}
+
+			dg.ChannelMessageSendEmbed(ChannelID, BotInfoReply)
 		}
 
 }
