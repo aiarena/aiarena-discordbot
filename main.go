@@ -393,7 +393,7 @@ func BotInfo(botname string, ChannelID string) {
 			BotInfoReply := &discordgo.MessageEmbed{
 				Color:       11534336,
 				Title:       "Invalid query",
-				Description: "Sorry, that query didn't make sense to me. Are you using invalid characters?",
+				Description: "Sorry, that query didn't make sense to me.\nAre you using invalid characters?",
 			}
 
 			dg.ChannelMessageSendEmbed(ChannelID, BotInfoReply)
