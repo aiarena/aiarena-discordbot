@@ -1,6 +1,7 @@
 package main
 
 import (
+		"regexp"
 		"bytes"
         "fmt"
         "os"
@@ -173,12 +174,8 @@ type AuthorAvatarStruct struct {
 }
 
 func BotInfo(botname string, ChannelID string) {
-		f := func(r rune) bool {
-			return r < 'A' || r > 'z'
-		}
-
-		// Ensure the query doesn't contain any special characters
-		if strings.IndexFunc(botname, f) == -1 {
+		// Ensure the query doesn't contain any invalid characters
+		if regexp.Match(`^[0-9a-zA-Z\._\-]*$`, []byte(botname)) {
 			db, err := sql.Open("mysql", viper.GetString("MysqlUser")+":"+viper.GetString("MysqlPass")+"@tcp("+viper.GetString("MysqlHost")+")/"+viper.GetString("MysqlDB"))
 			if err != nil {
 				log.Print(err.Error())
@@ -391,7 +388,7 @@ func BotInfo(botname string, ChannelID string) {
 			BotInfoReply := &discordgo.MessageEmbed{
 				Color:       11534336,
 				Title:       "Invalid query",
-				Description: "Sorry, that query didn't make sense to me.",
+				Description: "Sorry, that query didn't make sense to me. Are you using invalid characters?",
 			}
 
 			dg.ChannelMessageSendEmbed(ChannelID, BotInfoReply)
