@@ -140,8 +140,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
                 }
 
                 if method == "bot" {
-                        param := strings.Split(m.Content, " ")[1]
-                        BotInfo(param, m.ChannelID)
+                		// trim leading and trailing spaces
+						params := strings.Trim(m.Content, " ")
+                		if len(params) == 0 {
+							BotInfoUsage(m.ChannelID)
+						} else {
+							param := strings.Split(params, " ")[1]
+							BotInfo(param, m.ChannelID)
+						}
                 }
 
 		if method == "trello" {
@@ -171,6 +177,16 @@ type AuthorInfoStruct struct {
 
 type AuthorAvatarStruct struct {
         Avatar string `json:"avatar"`
+}
+
+func BotInfoUsage(ChannelID string) {
+	BotInfoReply := &discordgo.MessageEmbed{
+		Color:       11534336,
+		Title:       "Invalid query",
+		Description: "Sorry, that query didn't make sense to me.\nAre you using invalid characters?",
+	}
+
+	dg.ChannelMessageSendEmbed(ChannelID, BotInfoReply)
 }
 
 func BotInfo(botname string, ChannelID string) {
