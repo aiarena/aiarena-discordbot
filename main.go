@@ -118,6 +118,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
         SetBotAuthorRole(m.Author.ID)
 
+		log.Print(m.Content)
+
         if m.Content[:1] == "!" {
                 method := strings.Split(m.Content, " ")[0][1:]
 
@@ -140,13 +142,11 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
                 }
 
                 if method == "bot" {
-                		// trim leading and trailing spaces
-                		if m.Content != nil {
-							params := strings.Trim(m.Content, " ")
-							if len(params) != 0 {
-								param := strings.Split(params, " ")[1]
-								BotInfo(param, m.ChannelID)
-							}
+						// trim leading and trailing spaces
+						params_str := strings.Trim(m.Content, " ")
+						params := strings.Split(params_str, " ")
+						if len(params) == 2 {
+							BotInfo(params[1], m.ChannelID)
 						}
 						BotInfoUsage(m.ChannelID)
                 }
@@ -183,8 +183,8 @@ type AuthorAvatarStruct struct {
 func BotInfoUsage(ChannelID string) {
 	BotInfoReply := &discordgo.MessageEmbed{
 		Color:       11534336,
-		Title:       "Invalid query",
-		Description: "Sorry, that query didn't make sense to me.\nAre you using invalid characters?",
+		Title:       "!bot usage",
+		Description: "!bot <bot_name>",
 	}
 
 	dg.ChannelMessageSendEmbed(ChannelID, BotInfoReply)
