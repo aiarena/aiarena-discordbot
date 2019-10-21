@@ -126,7 +126,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			helpReply := &discordgo.MessageEmbed{
 				Color:       11534336, // Red Colour
 				Title:       "Commands",
-				Description: "!stream - Shows Stream URL\n!top10 - Top 10 Ranked Bots\n!bot <botname> - Shows Bot information",
+				Description: "!stream - Shows Stream URL\n!top10 - Top 10 Ranked Bots\n!bot <botname> - Shows Bot information\n!trello - Shows Trello board links\n!gs or !gettingstarted - Shows getting started infos",
 				Timestamp:   time.Now().Format(time.RFC3339),
 			}
 			s.ChannelMessageSendEmbed(m.ChannelID, helpReply)
@@ -158,6 +158,11 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 					"Website: https://trello.com/b/qw4DYU9H/ai-arena-website\n"+
 					"Arena Client: https://trello.com/b/a7cUfzl0/ai-arena-client\n"+
 					"Devop: https://trello.com/b/Tu2GR6gn/ai-arena-devop")
+		}
+
+		if method == "gs" || method == "gettingstarted" {
+			s.ChannelMessageSend(m.ChannelID,
+				"Getting started: https://ai-arena.net/wiki/getting-started/")
 		}
 	}
 }
