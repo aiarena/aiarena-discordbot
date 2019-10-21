@@ -118,9 +118,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
         SetBotAuthorRole(m.Author.ID)
 
-		log.Print(m.Content)
-
         if m.Content[:1] == "!" {
+				log.Print(m.Content)
                 method := strings.Split(m.Content, " ")[0][1:]
 
                 if method == "help" {
