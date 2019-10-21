@@ -230,7 +230,7 @@ func BotInfo(botname string, ChannelID string) {
 
         BotInfoReply := &discordgo.MessageEmbed {
                 Color: 11534336,
-                Title: botname,
+                Title: botdata.Name,
                 Description: "Author: " + authordata.Name  + "\nRace: " + fullrace + "\nCreated: " + botdata.Created + "\nELO: " + strconv.Itoa(botdata.Elo) + "\nType: " + botdata.Type,
                 Thumbnail: &discordgo.MessageEmbedThumbnail{
                         URL: "https://ai-arena.net/media/" + avatardata.Avatar,
