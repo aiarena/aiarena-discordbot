@@ -141,13 +141,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
                 if method == "bot" {
                 		// trim leading and trailing spaces
-						params := strings.Trim(m.Content, " ")
-                		if len(params) == 0 {
-							BotInfoUsage(m.ChannelID)
-						} else {
-							param := strings.Split(params, " ")[1]
-							BotInfo(param, m.ChannelID)
+                		if m.Content != nil {
+							params := strings.Trim(m.Content, " ")
+							if len(params) != 0 {
+								param := strings.Split(params, " ")[1]
+								BotInfo(param, m.ChannelID)
+							}
 						}
+						BotInfoUsage(m.ChannelID)
                 }
 
 		if method == "trello" {
