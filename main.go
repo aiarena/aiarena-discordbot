@@ -1,7 +1,6 @@
 package main
 
 import (
-	    "unicode/utf8"
 		"bytes"
         "fmt"
         "os"
@@ -174,7 +173,12 @@ type AuthorAvatarStruct struct {
 }
 
 func BotInfo(botname string, ChannelID string) {
-		if utf8.ValidString(botname) {
+		f := func(r rune) bool {
+			return r < 'A' || r > 'z'
+		}
+
+		// Ensure the query doesn't contain any special characters
+		if strings.IndexFunc(botname, f) == -1 {
 			db, err := sql.Open("mysql", viper.GetString("MysqlUser")+":"+viper.GetString("MysqlPass")+"@tcp("+viper.GetString("MysqlHost")+")/"+viper.GetString("MysqlDB"))
 			if err != nil {
 				log.Print(err.Error())
