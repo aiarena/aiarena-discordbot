@@ -174,8 +174,13 @@ type AuthorAvatarStruct struct {
 }
 
 func BotInfo(botname string, ChannelID string) {
+		is_valid_query, err := regexp.Match(`^[0-9a-zA-Z\._\-]*$`, []byte(botname))
+		if err != nil {
+			log.Print(err.Error())
+		}
+		
 		// Ensure the query doesn't contain any invalid characters
-		if regexp.Match(`^[0-9a-zA-Z\._\-]*$`, []byte(botname)) {
+		if is_valid_query {
 			db, err := sql.Open("mysql", viper.GetString("MysqlUser")+":"+viper.GetString("MysqlPass")+"@tcp("+viper.GetString("MysqlHost")+")/"+viper.GetString("MysqlDB"))
 			if err != nil {
 				log.Print(err.Error())
