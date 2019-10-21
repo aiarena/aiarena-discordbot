@@ -312,7 +312,7 @@ func SetMeleeChampion() {
                         panic(remerr.Error())
                 }
 
-		viper.Set("MeleeChampion", "")
+		viper.Set("MeleeChampion", "12345")
                 viper.WriteConfig()
 	}
 }
