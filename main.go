@@ -174,7 +174,7 @@ type AuthorAvatarStruct struct {
 }
 
 func BotInfo(botname string, ChannelID string) {
-		if utf8.Valid([]byte(botname)) {
+		if utf8.ValidString(botname) {
 			db, err := sql.Open("mysql", viper.GetString("MysqlUser")+":"+viper.GetString("MysqlPass")+"@tcp("+viper.GetString("MysqlHost")+")/"+viper.GetString("MysqlDB"))
 			if err != nil {
 				log.Print(err.Error())
