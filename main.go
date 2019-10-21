@@ -142,14 +142,14 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
                         BotInfo(param, m.ChannelID)
                 }
 
-				if method == "trello" {
-					s.ChannelMessageSend(m.ChannelID,
-						"Trello boards:\n" +
-							"General/misc: [board](https://trello.com/b/ykMT2vyR/ai-arena-general)\n" +
-							"Website: [board](https://trello.com/b/qw4DYU9H/ai-arena-website)\n" +
-							"Arena Client: [board](https://trello.com/b/a7cUfzl0/ai-arena-client)\n" +
-							"Devop: [board](https://trello.com/b/Tu2GR6gn/ai-arena-devop)")
-				}
+		if method == "trello" {
+			s.ChannelMessageSend(m.ChannelID,
+				"Trello boards:\n" +
+				"General/misc: [board](https://trello.com/b/ykMT2vyR/ai-arena-general)\n" +
+				"Website: [board](https://trello.com/b/qw4DYU9H/ai-arena-website)\n" +
+				"Arena Client: [board](https://trello.com/b/a7cUfzl0/ai-arena-client)\n" +
+				"Devop: [board](https://trello.com/b/Tu2GR6gn/ai-arena-devop)")
+		}
         }
 }
 
@@ -160,6 +160,7 @@ type BotInfoStruct struct {
         Race string `json:"plays_race"`
         Type string `json:"type"`
         UserID int `json:"user_id"`
+	BotID int `json:"id"`
 }
 
 type AuthorInfoStruct struct {
@@ -177,14 +178,14 @@ func BotInfo(botname string, ChannelID string) {
         }
         defer db.Close()
 
-        botresults, err := db.Query("SELECT name, created, elo, plays_race, type, user_id FROM aiarena_beta.core_bot where name = ?", botname)
+        botresults, err := db.Query("SELECT name, created, elo, plays_race, type, user_id, id FROM aiarena_beta.core_bot where name = ?", botname)
         if err != nil {
                 panic(err.Error())
         }
 
         var botdata BotInfoStruct
         for botresults.Next() {
-                err = botresults.Scan(&botdata.Name, &botdata.Created, &botdata.Elo, &botdata.Race, &botdata.Type, &botdata.UserID)
+                err = botresults.Scan(&botdata.Name, &botdata.Created, &botdata.Elo, &botdata.Race, &botdata.Type, &botdata.UserID, &botdata.BotID)
                 if err != nil {
                         panic(err.Error())
                 }
@@ -235,7 +236,7 @@ func BotInfo(botname string, ChannelID string) {
                         URL: "https://ai-arena.net/media/" + avatardata.Avatar,
                 },
                 Image: &discordgo.MessageEmbedImage{
-                        URL: "https://ai-arena.net/media/graphs/" + strconv.Itoa(botdata.UserID) + ".png",
+                        URL: "https://ai-arena.net/media/graphs/" + strconv.Itoa(botdata.BotID) + "_" + botdata.Name + ".png",
                 },
         }
 
@@ -305,7 +306,15 @@ func SetMeleeChampion() {
 
                         dg.ChannelMessageSend("555377512012709898", "Congratulations " + user.Username + "! You are the Melee Ladder Champion!")
                 }
-        }
+        } else {
+		remerr := dg.GuildMemberRoleRemove("430111136822722590", strconv.Itoa(viper.GetInt("MeleeChampion")), "630182770366349312")
+                if remerr != nil {
+                        panic(remerr.Error())
+                }
+
+		viper.Set("MeleeChampion", "")
+                viper.WriteConfig()
+	}
 }
 
 type BotAuthorRoleStruct struct {
