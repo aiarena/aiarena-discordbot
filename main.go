@@ -126,7 +126,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
                         helpReply := &discordgo.MessageEmbed {
                                 Color: 11534336, // Red Colour
                                 Title: "Commands",
-                                Description: "!stream - Shows Stream URL\n!top10 - Top 10 Ranked Bots\n!bot <botname> - Shows Bot information\n!connectdiscord - Connects your discord account to the aiarena account",
+                                Description: "!stream - Shows Stream URL\n!top10 - Top 10 Ranked Bots\n!bot <botname> - Shows Bot information",
                                 Timestamp: time.Now().Format(time.RFC3339),
                         }
                         s.ChannelMessageSendEmbed(m.ChannelID, helpReply)
