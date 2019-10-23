@@ -165,6 +165,11 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			s.ChannelMessageSend(m.ChannelID,
 				"Getting started: https://ai-arena.net/wiki/getting-started/")
 		}
+
+		if method == "invite" {
+			s.ChannelMessageSend(m.ChannelID,
+				"Discord invite link: https://discord.gg/yDBzbtC")
+		}
 	}
 }
 
