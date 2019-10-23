@@ -118,7 +118,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	SetBotAuthorRole(m.Author.ID)
 
-	if m.Content[:1] == "!" {
+	// Only process valid commands
+	if len(m.Content) > 1 && m.Content[:1] == "!" {
 		log.Print(m.Content)
 		method := strings.Split(m.Content, " ")[0][1:]
 
