@@ -230,7 +230,7 @@ func BotInfo(botname string, ChannelID string) {
 		}
 
 		if exact_match_count == 1 {
-			currentseasonid, err := db.Query("SELECT a.* FROM core_season a LEFT OUTER JOIN core_season b ON a.id = b.id AND a.number < b.number WHERE b.id IS NULL")
+			currentseasonid, err := db.Query("SELECT a.id FROM core_season a LEFT OUTER JOIN core_season b ON a.id = b.id AND a.number < b.number WHERE b.id IS NULL")
 			if err != nil {
 				panic(err.Error())
 			}
@@ -323,7 +323,7 @@ func BotInfo(botname string, ChannelID string) {
 			}
 
 			if partial_match_count == 1 { // dump that bot's info
-				currentseasonid_results, err := db.Query("SELECT a.* FROM core_season a LEFT OUTER JOIN core_season b ON a.id = b.id AND a.number < b.number WHERE b.id IS NULL")
+				currentseasonid_results, err := db.Query("SELECT a.id FROM core_season a LEFT OUTER JOIN core_season b ON a.id = b.id AND a.number < b.number WHERE b.id IS NULL")
 				if err != nil {
 					panic(err.Error())
 				}
@@ -462,7 +462,7 @@ func SetMeleeChampion() {
 	}
 	defer db.Close()
 
-	currentseasonid_results, err := db.Query("SELECT a.* FROM core_season a LEFT OUTER JOIN core_season b ON a.id = b.id AND a.number < b.number WHERE b.id IS NULL")
+	currentseasonid_results, err := db.Query("SELECT a.id FROM core_season a LEFT OUTER JOIN core_season b ON a.id = b.id AND a.number < b.number WHERE b.id IS NULL")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -578,7 +578,7 @@ func MeleeTopTen(ChannelID string) {
 	}
 	defer db.Close()
 
-	currentseasonid_results, err := db.Query("SELECT a.* FROM core_season a LEFT OUTER JOIN core_season b ON a.id = b.id AND a.number < b.number WHERE b.id IS NULL")
+	currentseasonid_results, err := db.Query("SELECT a.id FROM core_season a LEFT OUTER JOIN core_season b ON a.id = b.id AND a.number < b.number WHERE b.id IS NULL")
 	if err != nil {
 		panic(err.Error())
 	}
