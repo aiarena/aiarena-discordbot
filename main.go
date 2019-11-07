@@ -599,7 +599,7 @@ func MeleeTopTen(ChannelID string) {
 		}
 	}
 
-	results, err := db.Query("SELECT user_id FROM aiarena_beta.core_seasonparticipation sp inner join aiarena_beta.core_bot b on sp.bot_id = b.id where season_id = ? and active = 1 order by elo desc limit 10", currentseasonid)
+	results, err := db.Query("SELECT name, elo FROM aiarena_beta.core_seasonparticipation sp inner join aiarena_beta.core_bot b on sp.bot_id = b.id where season_id = ? and active = 1 order by elo desc limit 10", currentseasonid)
 	if err != nil {
 		panic(err.Error())
 	}
