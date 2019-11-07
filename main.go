@@ -230,7 +230,12 @@ func BotInfo(botname string, ChannelID string) {
 		}
 
 		if exact_match_count == 1 {
-			botresults, err := db.Query("SELECT name, created, elo, plays_race, type, user_id, id FROM aiarena_beta.core_bot where name = ?", botname)
+			currentseasonid, err := db.Query("SELECT a.* FROM core_season a LEFT OUTER JOIN core_season b ON a.id = b.id AND a.number < b.number WHERE b.id IS NULL")
+			if err != nil {
+				panic(err.Error())
+			}
+
+			botresults, err := db.Query("SELECT name, created, elo, plays_race, type, user_id, b.id FROM aiarena_beta.core_seasonparticipation sp inner join aiarena_beta.core_bot b on sp.bot_id = b.id where name = ? and season_id = ?", botname, currentseasonid)
 			if err != nil {
 				panic(err.Error())
 			}
@@ -444,7 +449,12 @@ func SetMeleeChampion() {
 	}
 	defer db.Close()
 
-	meleechamionresult, err := db.Query("SELECT user_id FROM aiarena_beta.core_bot where active = 1 order by elo desc limit 1")
+	currentseasonid, err := db.Query("SELECT a.* FROM core_season a LEFT OUTER JOIN core_season b ON a.id = b.id AND a.number < b.number WHERE b.id IS NULL")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	meleechamionresult, err := db.Query("SELECT user_id FROM aiarena_beta.core_seasonparticipation sp inner join aiarena_beta.core_bot b on sp.bot_id = b.id where season_id = ? and active = 1 order by elo desc limit 1", currentseasonid)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -547,7 +557,12 @@ func MeleeTopTen(ChannelID string) {
 	}
 	defer db.Close()
 
-	results, err := db.Query("SELECT name,elo FROM aiarena_beta.core_bot where active = 1 order by elo desc limit 10")
+	currentseasonid, err := db.Query("SELECT a.* FROM core_season a LEFT OUTER JOIN core_season b ON a.id = b.id AND a.number < b.number WHERE b.id IS NULL")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	results, err := db.Query("SELECT user_id FROM aiarena_beta.core_seasonparticipation sp inner join aiarena_beta.core_bot b on sp.bot_id = b.id where season_id = ? and active = 1 order by elo desc limit 10", currentseasonid)
 	if err != nil {
 		panic(err.Error())
 	}
