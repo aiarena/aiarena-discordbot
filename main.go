@@ -323,7 +323,12 @@ func BotInfo(botname string, ChannelID string) {
 			}
 
 			if partial_match_count == 1 { // dump that bot's info
-				botresults, err := db.Query("SELECT name, created, elo, plays_race, type, user_id, id FROM aiarena_beta.core_bot where LEFT(name, ?) = ?", botname_len, botname)
+				currentseasonid, err := db.Query("SELECT a.* FROM core_season a LEFT OUTER JOIN core_season b ON a.id = b.id AND a.number < b.number WHERE b.id IS NULL")
+				if err != nil {
+					panic(err.Error())
+				}
+				
+				botresults, err := db.Query("SELECT name, created, elo, plays_race, type, user_id, b.id FROM aiarena_beta.core_seasonparticipation sp inner join aiarena_beta.core_bot b on sp.bot_id = b.id where LEFT(name, ?) = ? and season_id = ?", botname_len, botname, currentseasonid)
 				if err != nil {
 					panic(err.Error())
 				}
