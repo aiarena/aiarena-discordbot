@@ -513,7 +513,8 @@ func SetMeleeChampion() {
 		if discorddata.UserID != viper.GetInt("MeleeChampion") {
 			remerr := dg.GuildMemberRoleRemove("430111136822722590", strconv.Itoa(viper.GetInt("MeleeChampion")), "630182770366349312")
 			if remerr != nil {
-				panic(remerr.Error())
+				fmt.Println("Call to GuildMemberRoleRemove failed with parameter: "+strconv.Itoa(viper.GetInt("MeleeChampion")))
+				fmt.Printf(remerr.Error())
 			}
 
 			viper.Set("MeleeChampion", discorddata.UserID)
