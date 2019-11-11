@@ -521,7 +521,7 @@ func SetMeleeChampion() {
 
 			adderr := dg.GuildMemberRoleAdd("430111136822722590", strconv.Itoa(discorddata.UserID), "630182770366349312")
 			if adderr != nil {
-				fmt.Println("Failed to assign Discord role to AI Arena user: "+strconv.Itoa(meleechamionresult))
+				fmt.Println("Failed to assign Discord role to AI Arena user: "+strconv.Itoa(championdata.UserID))
 				fmt.Printf(adderr.Error())
 			}
 
