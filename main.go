@@ -125,10 +125,12 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 		if method == "help" {
 			helpReply := &discordgo.MessageEmbed{
-				Color:       11534336, // Red Colour
-				Title:       "Commands",
-				Description: "!stream - Shows Stream URL\n!top10 - Top 10 Ranked Bots\n!bot <botname> - Shows Bot information\n!trello - Shows Trello board links\n!gs or !gettingstarted - Shows getting started infos",
-				Timestamp:   time.Now().Format(time.RFC3339),
+				Color: 11534336, // Red Colour
+				Title: "Commands",
+				Description: "!stream - Shows Stream URL\n!top10 - Top 10 Ranked Bots\n!bot <botname> - Shows Bot information\n!trello - Shows Trello board links\n!gs or !gettingstarted - Shows getting started infos" +
+					"\n!j or !join - Request the stream voice listener bot to join the voice channel." +
+					"\n!l or !leave - Request the stream voice listener bot to leave the voice channel.",
+				Timestamp: time.Now().Format(time.RFC3339),
 			}
 			s.ChannelMessageSendEmbed(m.ChannelID, helpReply)
 		}
@@ -343,7 +345,7 @@ func BotInfo(botname string, ChannelID string) {
 						panic(err.Error())
 					}
 				}
-				
+
 				botresults, err := db.Query("SELECT name, created, elo, plays_race, type, user_id, b.id FROM aiarena_beta.core_seasonparticipation sp inner join aiarena_beta.core_bot b on sp.bot_id = b.id where LEFT(name, ?) = ? and season_id = ?", botname_len, botname, currentseasonid)
 				if err != nil {
 					panic(err.Error())
@@ -513,7 +515,7 @@ func SetMeleeChampion() {
 		if discorddata.UserID != viper.GetInt("MeleeChampion") && viper.GetInt("MeleeChampion") != 0 {
 			remerr := dg.GuildMemberRoleRemove("430111136822722590", strconv.Itoa(viper.GetInt("MeleeChampion")), "630182770366349312")
 			if remerr != nil {
-				fmt.Println("Call to GuildMemberRoleRemove failed with parameter: "+strconv.Itoa(viper.GetInt("MeleeChampion")))
+				fmt.Println("Call to GuildMemberRoleRemove failed with parameter: " + strconv.Itoa(viper.GetInt("MeleeChampion")))
 				fmt.Printf(remerr.Error())
 			}
 
@@ -522,7 +524,7 @@ func SetMeleeChampion() {
 
 			adderr := dg.GuildMemberRoleAdd("430111136822722590", strconv.Itoa(discorddata.UserID), "630182770366349312")
 			if adderr != nil {
-				fmt.Println("Failed to assign Discord role to AI Arena user: "+strconv.Itoa(championdata.UserID))
+				fmt.Println("Failed to assign Discord role to AI Arena user: " + strconv.Itoa(championdata.UserID))
 				fmt.Printf(adderr.Error())
 			}
 
