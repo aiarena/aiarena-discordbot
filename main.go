@@ -512,11 +512,13 @@ func SetMeleeChampion() {
 	}
 
 	if discorddata.UserID != 0 {
-		if discorddata.UserID != viper.GetInt("MeleeChampion") && viper.GetInt("MeleeChampion") != 0 {
-			remerr := dg.GuildMemberRoleRemove("430111136822722590", strconv.Itoa(viper.GetInt("MeleeChampion")), "630182770366349312")
-			if remerr != nil {
-				fmt.Println("Call to GuildMemberRoleRemove failed with parameter: " + strconv.Itoa(viper.GetInt("MeleeChampion")))
-				fmt.Printf(remerr.Error())
+		if discorddata.UserID != viper.GetInt("MeleeChampion") {
+			if viper.GetInt("MeleeChampion") != 0 {
+				remerr := dg.GuildMemberRoleRemove("430111136822722590", strconv.Itoa(viper.GetInt("MeleeChampion")), "630182770366349312")
+				if remerr != nil {
+					fmt.Println("Call to GuildMemberRoleRemove failed with parameter: " + strconv.Itoa(viper.GetInt("MeleeChampion")))
+					fmt.Printf(remerr.Error())
+				}
 			}
 
 			viper.Set("MeleeChampion", discorddata.UserID)
@@ -536,9 +538,12 @@ func SetMeleeChampion() {
 			dg.ChannelMessageSend("555377512012709898", "Congratulations "+user.Username+"! You are the Melee Ladder Champion!")
 		}
 	} else {
-		remerr := dg.GuildMemberRoleRemove("430111136822722590", strconv.Itoa(viper.GetInt("MeleeChampion")), "630182770366349312")
-		if remerr != nil {
-			panic(remerr.Error())
+		if viper.GetInt("MeleeChampion") != 0 {
+			remerr := dg.GuildMemberRoleRemove("430111136822722590", strconv.Itoa(viper.GetInt("MeleeChampion")), "630182770366349312")
+			if remerr != nil {
+				fmt.Println("Call to GuildMemberRoleRemove failed with parameter: " + strconv.Itoa(viper.GetInt("MeleeChampion")))
+				fmt.Printf(remerr.Error())
+			}
 		}
 
 		viper.Set("MeleeChampion", 0)
