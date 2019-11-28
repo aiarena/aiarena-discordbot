@@ -544,6 +544,9 @@ func SetMeleeChampion() {
 				fmt.Println("Call to GuildMemberRoleRemove failed with parameter: " + strconv.Itoa(viper.GetInt("MeleeChampion")))
 				fmt.Printf(remerr.Error())
 			}
+
+			viper.Set("MeleeChampion", 0)
+			viper.WriteConfig()
 		}
 
 		viper.Set("MeleeChampion", 0)
