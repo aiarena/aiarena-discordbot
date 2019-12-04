@@ -70,6 +70,7 @@ func main() {
 
 func httpserver() {
 	http.HandleFunc("/result-post", handleResultPost)
+	http.HandleFunc("/bot-activation-state_change", handleBotActivationStateChangePost)
 	log.Fatal(http.ListenAndServe(":8880", nil))
 }
 
@@ -108,6 +109,21 @@ func handleResultPost(w http.ResponseWriter, r *http.Request) {
 
 	}
 	SetMeleeChampion()
+}
+
+type activation_state_change_struct struct {
+	BotName  string `json:"bot_name"`
+	BotId    int    `json:"bot_id"`
+	IsActive bool   `json:"is_active"`
+}
+
+func handleBotActivationStateChangePost(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var result result_struct
+	err := decoder.Decode(&result)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -165,7 +181,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 		if method == "gs" || method == "gettingstarted" {
 			s.ChannelMessageSend(m.ChannelID,
-				"Getting started: https://ai-arena.net/wiki/getting-started/")
+				"Getting started: https://ai-arena.net/wiki/bot-development/getting-started/")
 		}
 
 		if method == "invite" {
@@ -548,9 +564,6 @@ func SetMeleeChampion() {
 			viper.Set("MeleeChampion", 0)
 			viper.WriteConfig()
 		}
-
-		viper.Set("MeleeChampion", 0)
-		viper.WriteConfig()
 	}
 }
 
