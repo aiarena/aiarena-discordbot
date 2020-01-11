@@ -312,8 +312,8 @@ func BotInfo(botname string, ChannelID string) {
 			}
 			BotInfoReply := &discordgo.MessageEmbed{
 				Color:       11534336,
-				Title:       "[" + botdata.Name + "](https://ai-arena.net/bots/" + strconv.Itoa(botdata.BotID) + ")",
-				Description: "Author: " + authordata.Name + "\nRace: " + fullrace + "\nCreated: " + botdata.Created + "\nELO: " + strconv.Itoa(botdata.Elo) + "\nType: " + botdata.Type,
+				Title:       botdata.Name,
+				Description: "[Bot page](https://ai-arena.net/bots/" + strconv.Itoa(botdata.BotID) + ")\nAuthor: " + authordata.Name + "\nRace: " + fullrace + "\nELO: " + strconv.Itoa(botdata.Elo) + "\nType: " + botdata.Type,
 				Thumbnail: &discordgo.MessageEmbedThumbnail{
 					URL: "https://ai-arena.net/media/" + avatardata.Avatar,
 				},
