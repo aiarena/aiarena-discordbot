@@ -143,7 +143,12 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			helpReply := &discordgo.MessageEmbed{
 				Color: 11534336, // Red Colour
 				Title: "Commands",
-				Description: "!stream - Shows Stream URL\n!top10 - Top 10 Ranked Bots\n!bot <botname> - Shows Bot information\n!trello - Shows Trello board links\n!gs or !gettingstarted - Shows getting started infos" +
+				Description: "!stream - Shows Stream URL" +
+					"\n!invite - Get a discord invite link." +
+					"\n!top10 - Top 10 Ranked Bot.s" +
+					"\n!bot <botname> - Shows Bot information." +
+					"\n!trello - Shows Trello board links." +
+					"\n!gs or !gettingstarted - Shows getting started infos." +
 					"\n!j or !join - Request the stream voice listener bot to join the voice channel." +
 					"\n!l or !leave - Request the stream voice listener bot to leave the voice channel.",
 				Timestamp: time.Now().Format(time.RFC3339),
