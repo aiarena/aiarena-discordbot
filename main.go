@@ -310,10 +310,9 @@ func BotInfo(botname string, ChannelID string) {
 			} else if botdata.Race == "Z" {
 				fullrace = "Zerg"
 			}
-
 			BotInfoReply := &discordgo.MessageEmbed{
 				Color:       11534336,
-				Title:       botdata.Name,
+				Title:       "[" + botdata.Name + "](https://ai-arena.net/bots/" + strconv.Itoa(botdata.BotID) + ")",
 				Description: "Author: " + authordata.Name + "\nRace: " + fullrace + "\nCreated: " + botdata.Created + "\nELO: " + strconv.Itoa(botdata.Elo) + "\nType: " + botdata.Type,
 				Thumbnail: &discordgo.MessageEmbedThumbnail{
 					URL: "https://ai-arena.net/media/" + avatardata.Avatar,
