@@ -319,7 +319,7 @@ func BotInfo(botname string, ChannelID string) {
 					URL: "https://ai-arena.net/media/" + avatardata.Avatar,
 				},
 				Image: &discordgo.MessageEmbedImage{
-					URL: "https://ai-arena.net/media/graphs/" + strconv.Itoa(botdata.BotID) + "_" + botdata.Name + ".png",
+					URL: "https://ai-arena.net/media/graphs/" + strconv.Itoa(currentseasonid) + "_" + strconv.Itoa(botdata.BotID) + "_" + botdata.Name + ".png",
 				},
 			}
 
@@ -420,7 +420,7 @@ func BotInfo(botname string, ChannelID string) {
 						URL: "https://ai-arena.net/media/" + avatardata.Avatar,
 					},
 					Image: &discordgo.MessageEmbedImage{
-						URL: "https://ai-arena.net/media/graphs/" + strconv.Itoa(botdata.BotID) + "_" + botdata.Name + ".png",
+						URL: "https://ai-arena.net/media/graphs/" + strconv.Itoa(currentseasonid) + "_" + strconv.Itoa(botdata.BotID) + "_" + botdata.Name + ".png",
 					},
 				}
 
