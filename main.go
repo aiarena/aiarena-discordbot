@@ -197,6 +197,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 		if method == "refreshroles" {
 			RefreshAllBotAuthorRoles()
+			s.ChannelMessageSend(m.ChannelID, "Roles refreshed.")
 		}
 	}
 }
