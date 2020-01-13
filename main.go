@@ -588,7 +588,7 @@ func RefreshAllBotAuthorRoles() {
 	}
 	defer db.Close()
 
-	discordresult, err := db.Query("SELECT user_id, case patreon_level when 'none' then false else true end as is_donator FROM discord_bind_discorduser inner join core_user on discord_bind_discorduser.user_id = core_user.id", discordid)
+	discordresult, err := db.Query("SELECT user_id, case patreon_level when 'none' then false else true end as is_donator FROM discord_bind_discorduser inner join core_user on discord_bind_discorduser.user_id = core_user.id")
 	if err != nil {
 		panic(err.Error())
 	}
