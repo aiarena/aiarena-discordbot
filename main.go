@@ -603,6 +603,7 @@ func RefreshAllBotAuthorRoles() {
 
 		if discorddata.UserID != 0 {
 			userIdStr := strconv.Itoa(discorddata.UserID)
+			log.Print("Updating roles for user " + userIdStr)
 			err = dg.GuildMemberRoleAdd("430111136822722590", userIdStr, "555372163788570635")
 			if err != nil {
 				log.Print(err.Error())
