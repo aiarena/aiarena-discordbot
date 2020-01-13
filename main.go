@@ -576,33 +576,48 @@ type BotAuthorRoleStruct struct {
 	IsDonator bool `json:"is_donator"`
 }
 
-//func RefreshAllBotAuthorRoles() {
-//	db, err := sql.Open("mysql", viper.GetString("MysqlUser")+":"+viper.GetString("MysqlPass")+"@tcp("+viper.GetString("MysqlHost")+")/"+viper.GetString("MysqlDB"))
-//	if err != nil {
-//		log.Print(err.Error())
-//	}
-//	defer db.Close()
-//
-//	discordresult, err := db.Query("SELECT user_id, case patreon_level when 'none' then false else true end as is_donator FROM discord_bind_discorduser inner join core_user on discord_bind_discorduser.user_id = core_user.id where uid = ?", discordid)
-//	if err != nil {
-//		panic(err.Error())
-//	}
-//
-//	var discorddata BotAuthorRoleStruct
-//	for discordresult.Next() {
-//		err = discordresult.Scan(&discorddata.UserID)
-//		if err != nil {
-//			panic(err.Error())
-//		}
-//	}
-//
-//	if discorddata.UserID != 0 {
-//		adderr := dg.GuildMemberRoleAdd("430111136822722590", discordid, "555372163788570635")
-//		if adderr != nil {
-//			panic(adderr.Error())
-//		}
-//	}
-//}
+func RefreshAllBotAuthorRoles() {
+	db, err := sql.Open("mysql", viper.GetString("MysqlUser")+":"+viper.GetString("MysqlPass")+"@tcp("+viper.GetString("MysqlHost")+")/"+viper.GetString("MysqlDB"))
+	if err != nil {
+		log.Print(err.Error())
+	}
+	defer db.Close()
+
+	discordresult, err := db.Query("SELECT user_id, case patreon_level when 'none' then false else true end as is_donator FROM discord_bind_discorduser inner join core_user on discord_bind_discorduser.user_id = core_user.id", discordid)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	var discorddata BotAuthorRoleStruct
+	for discordresult.Next() {
+		err = discordresult.Scan(&discorddata.UserID)
+		if err != nil {
+			log.Print(err.Error())
+			continue
+		}
+
+		if discorddata.UserID != 0 {
+			adderr := dg.GuildMemberRoleAdd("430111136822722590", discordid, "555372163788570635")
+			if adderr != nil {
+				log.Print(err.Error())
+				continue
+			}
+			if discorddata.IsDonator {
+				adderr := dg.GuildMemberRoleAdd("430111136822722590", discordid, "610982126669660218")
+				if adderr != nil {
+					log.Print(err.Error())
+					continue
+				}
+			} else {
+				adderr := dg.GuildMemberRoleRemove("430111136822722590", discordid, "610982126669660218")
+				if adderr != nil {
+					log.Print(err.Error())
+					continue
+				}
+			}
+		}
+	}
+}
 
 func SetBotAuthorRole(discordid string) {
 	db, err := sql.Open("mysql", viper.GetString("MysqlUser")+":"+viper.GetString("MysqlPass")+"@tcp("+viper.GetString("MysqlHost")+")/"+viper.GetString("MysqlDB"))
@@ -618,7 +633,7 @@ func SetBotAuthorRole(discordid string) {
 
 	var discorddata BotAuthorRoleStruct
 	for discordresult.Next() {
-		err = discordresult.Scan(&discorddata.UserID)
+		err = discordresult.Scan(&discorddata.UserID, &discorddata.IsDonator)
 		if err != nil {
 			log.Print(err.Error())
 			return
