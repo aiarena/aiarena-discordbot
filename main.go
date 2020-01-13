@@ -602,19 +602,20 @@ func RefreshAllBotAuthorRoles() {
 		}
 
 		if discorddata.UserID != 0 {
-			adderr := dg.GuildMemberRoleAdd("430111136822722590", strconv.Itoa(discorddata.UserID), "555372163788570635")
+			userIdStr := strconv.Itoa(discorddata.UserID)
+			adderr := dg.GuildMemberRoleAdd("430111136822722590", userIdStr, "555372163788570635")
 			if adderr != nil {
 				log.Print(err.Error())
 				continue
 			}
 			if discorddata.IsDonator {
-				adderr := dg.GuildMemberRoleAdd("430111136822722590", strconv.Itoa(discorddata.UserID), "610982126669660218")
+				adderr := dg.GuildMemberRoleAdd("430111136822722590", userIdStr, "610982126669660218")
 				if adderr != nil {
 					log.Print(err.Error())
 					continue
 				}
 			} else {
-				adderr := dg.GuildMemberRoleRemove("430111136822722590", strconv.Itoa(discorddata.UserID), "610982126669660218")
+				adderr := dg.GuildMemberRoleRemove("430111136822722590", userIdStr, "610982126669660218")
 				if adderr != nil {
 					log.Print(err.Error())
 					continue
