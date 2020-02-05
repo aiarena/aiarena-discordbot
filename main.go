@@ -201,19 +201,27 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 
 		if method == "kingslayer" {
-			reign_since := viper.GetTime("meleechampionbotsince")
-
-			// only count back to when the challenge started
 			kingslayer_started := viper.GetTime("kingslayerstarted")
-			if kingslayer_started.After(reign_since) {
-				reign_since = kingslayer_started
-			}
 
-			// calculate duration
-			_, _, day, hour, min, _ := date_diff(reign_since, time.Now())
-			s.ChannelMessageSend(m.ChannelID,
-				"Current Kingslayer: "+viper.GetString("meleechampionbotname")+
-					"\nDuration: "+strconv.Itoa(day)+"d "+strconv.Itoa(hour)+"h "+strconv.Itoa(min)+"m")
+			// has the challenge started yet?
+			if time.Now().After(kingslayer_started) {
+				reign_since := viper.GetTime("meleechampionbotsince")
+
+				// only count back to when the challenge started
+				if kingslayer_started.After(reign_since) {
+					reign_since = kingslayer_started
+				}
+
+				// calculate duration
+				_, _, day, hour, min, _ := date_diff(reign_since, time.Now())
+				s.ChannelMessageSend(m.ChannelID,
+					"Current King: "+viper.GetString("meleechampionbotname")+
+						"\nReign duration: "+strconv.Itoa(day)+"d "+strconv.Itoa(hour)+"h "+strconv.Itoa(min)+"m")
+			} else {
+				_, _, day, hour, min, _ := date_diff(time.Now(), kingslayer_started)
+				s.ChannelMessageSend(m.ChannelID,
+					"Flash Challenge: Kingslayer starts in: "+strconv.Itoa(day)+"d "+strconv.Itoa(hour)+"h "+strconv.Itoa(min)+"m")
+			}
 
 		}
 	}
