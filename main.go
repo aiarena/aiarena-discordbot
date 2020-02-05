@@ -201,7 +201,16 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 
 		if method == "kingslayer" {
-			_, _, day, hour, min, _ := date_diff(viper.GetTime("meleechampionbotsince"), time.Now())
+			reign_since = viper.GetTime("meleechampionbotsince")
+
+			// only count back to when the challenge started
+			kingslayer_started = viper.GetTime("kingslayerstarted")
+			if reign_since < kingslayer_started {
+				reign_since = kingslayer_started
+			}
+
+			// calculate duration
+			_, _, day, hour, min, _ := date_diff(reign_since, time.Now())
 			s.ChannelMessageSend(m.ChannelID,
 				"Current Kingslayer: "+viper.GetString("meleechampionbotname")+
 					"\nDuration: "+strconv.Itoa(day)+"d "+strconv.Itoa(hour)+"h "+strconv.Itoa(min)+"m")
