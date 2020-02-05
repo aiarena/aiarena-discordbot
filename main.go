@@ -212,9 +212,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 // From https://golangr.com/difference-between-two-dates/
 func date_diff(a, b time.Time) (year, month, day, hour, min, sec int) {
-	if a.Location() != b.Location() {
-		b = b.In(a.Location())
-	}
+	//if a.Location() != b.Location() {
+	//	b = b.In(a.Location())
+	//}
 	if a.After(b) {
 		a, b = b, a
 	}
