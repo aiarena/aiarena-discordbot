@@ -218,7 +218,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				KingslayerReply := &discordgo.MessageEmbed{
 					Color:       11534336,
 					Title:       "Flash Challenge: Kingslayer",
-					Description: "Current King: ["+viper.GetString("meleechampionbotname")+"](https://ai-arena.net/bots/" + viper.GetString("meleechampionbotid") + ")" + "\nReign duration: "+strconv.Itoa(day)+"d "+strconv.Itoa(hour)+"h "+strconv.Itoa(min)+"m"
+					Description: "Current King: [" + viper.GetString("meleechampionbotname") + "](https://ai-arena.net/bots/" + viper.GetString("meleechampionbotid") + ")" + "\nReign duration: " + strconv.Itoa(day) + "d " + strconv.Itoa(hour) + "h " + strconv.Itoa(min) + "m",
 				}
 
 				dg.ChannelMessageSendEmbed(m.ChannelID, KingslayerReply)
@@ -228,7 +228,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				KingslayerReply := &discordgo.MessageEmbed{
 					Color:       11534336,
 					Title:       "Flash Challenge: Kingslayer",
-					Description: "Starts in: "+strconv.Itoa(day)+"d "+strconv.Itoa(hour)+"h "+strconv.Itoa(min)+"m"
+					Description: "Starts in: " + strconv.Itoa(day) + "d " + strconv.Itoa(hour) + "h " + strconv.Itoa(min) + "m",
 				}
 
 				dg.ChannelMessageSendEmbed(m.ChannelID, KingslayerReply)
