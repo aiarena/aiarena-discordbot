@@ -513,7 +513,7 @@ func SetMeleeChampion() {
 		}
 	}
 
-	meleechamionresult, err := db.Query("SELECT user_id, b.bot_id, b.name FROM aiarena_beta.core_seasonparticipation sp inner join aiarena_beta.core_bot b on sp.bot_id = b.id where season_id = ? and active = 1 order by elo desc limit 1", currentseasonid)
+	meleechamionresult, err := db.Query("SELECT user_id, b.id, b.name FROM aiarena_beta.core_seasonparticipation sp inner join aiarena_beta.core_bot b on sp.bot_id = b.id where season_id = ? and active = 1 order by elo desc limit 1", currentseasonid)
 	if err != nil {
 		panic(err.Error())
 	}
