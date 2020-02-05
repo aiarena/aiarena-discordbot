@@ -204,7 +204,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			_, _, day, hour, min, _ := date_diff(viper.GetTime("meleechampionbotsince"), time.Now())
 			s.ChannelMessageSend(m.ChannelID,
 				"Current Kingslayer: "+viper.GetString("meleechampionbotname")+
-					"\nDuration: "+day+"d "+hour+"h "+min+"m")
+					"\nDuration: "+strconv.Itoa(day)+"d "+strconv.Itoa(hour)+"h "+strconv.Itoa(min)+"m")
 
 		}
 	}
