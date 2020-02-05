@@ -214,13 +214,24 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 				// calculate duration
 				_, _, day, hour, min, _ := date_diff(reign_since, time.Now())
-				s.ChannelMessageSend(m.ChannelID,
-					"Current King: "+viper.GetString("meleechampionbotname")+
-						"\nReign duration: "+strconv.Itoa(day)+"d "+strconv.Itoa(hour)+"h "+strconv.Itoa(min)+"m")
+
+				KingslayerReply := &discordgo.MessageEmbed{
+					Color:       11534336,
+					Title:       "Flash Challenge: Kingslayer",
+					Description: "Current King: ["+viper.GetString("meleechampionbotname")+"](https://ai-arena.net/bots/" + viper.GetString("meleechampionbotid") + ")" + "\nReign duration: "+strconv.Itoa(day)+"d "+strconv.Itoa(hour)+"h "+strconv.Itoa(min)+"m"
+				}
+
+				dg.ChannelMessageSendEmbed(m.ChannelID, KingslayerReply)
 			} else {
 				_, _, day, hour, min, _ := date_diff(time.Now(), kingslayer_started)
-				s.ChannelMessageSend(m.ChannelID,
-					"Flash Challenge: Kingslayer starts in: "+strconv.Itoa(day)+"d "+strconv.Itoa(hour)+"h "+strconv.Itoa(min)+"m")
+
+				KingslayerReply := &discordgo.MessageEmbed{
+					Color:       11534336,
+					Title:       "Flash Challenge: Kingslayer",
+					Description: "Starts in: "+strconv.Itoa(day)+"d "+strconv.Itoa(hour)+"h "+strconv.Itoa(min)+"m"
+				}
+
+				dg.ChannelMessageSendEmbed(m.ChannelID, KingslayerReply)
 			}
 
 		}
