@@ -484,7 +484,9 @@ func BotInfo(botname string, ChannelID string) {
 }
 
 type ChampionStruct struct {
-	UserID int `json:"user_id"`
+	UserID  int    `json:"user_id"`
+	BotID   int    `json:"bot_id"`
+	BotName string `json:"bot_name"`
 }
 
 type DiscordUserStruct struct {
@@ -511,14 +513,14 @@ func SetMeleeChampion() {
 		}
 	}
 
-	meleechamionresult, err := db.Query("SELECT user_id FROM aiarena_beta.core_seasonparticipation sp inner join aiarena_beta.core_bot b on sp.bot_id = b.id where season_id = ? and active = 1 order by elo desc limit 1", currentseasonid)
+	meleechamionresult, err := db.Query("SELECT user_id, b.bot_id, b.name FROM aiarena_beta.core_seasonparticipation sp inner join aiarena_beta.core_bot b on sp.bot_id = b.id where season_id = ? and active = 1 order by elo desc limit 1", currentseasonid)
 	if err != nil {
 		panic(err.Error())
 	}
 
 	var championdata ChampionStruct
 	for meleechamionresult.Next() {
-		err = meleechamionresult.Scan(&championdata.UserID)
+		err = meleechamionresult.Scan(&championdata.UserID, &championdata.BotID, &championdata.BotName)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -535,6 +537,13 @@ func SetMeleeChampion() {
 		if err != nil {
 			panic(err.Error())
 		}
+	}
+
+	if championdata.BotID != viper.GetInt("MeleeChampionBot") {
+		viper.Set("MeleeChampionBotId", championdata.BotID)
+		viper.Set("MeleeChampionBotName", championdata.BotName)
+		viper.Set("MeleeChampionBotSince", time.Now().Format(time.RFC3339))
+		viper.WriteConfig()
 	}
 
 	if discorddata.UserID != 0 {
