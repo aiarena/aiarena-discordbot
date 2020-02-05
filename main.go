@@ -205,7 +205,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			// only count back to when the challenge started
 			kingslayer_started := viper.GetTime("kingslayerstarted")
-			if reign_since < kingslayer_started {
+			if kingslayer_started.After(reign_since) {
 				reign_since = kingslayer_started
 			}
 
