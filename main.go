@@ -145,7 +145,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				Title: "Commands",
 				Description: "!stream - Shows Stream URL" +
 					"\n!invite - Get a discord invite link." +
-					"\n!top10 - Top 10 Ranked Bot.s" +
+					"\n!top10 - Top 10 Ranked Bots" +
+					"\n!top16 - Top 16 Ranked Bots" +
 					"\n!bot <botname> - Shows Bot information." +
 					"\n!refreshroles - Refresh Discord roles based on website user data (e.g. Bot Authors, Donators, etc)." +
 					"\n!trello - Shows Trello board links." +
@@ -163,6 +164,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 		if method == "top10" {
 			MeleeTopTen(m.ChannelID)
+		}
+
+		if method == "top16" {
+			MeleeTopSexteen(m.ChannelID)
 		}
 
 		if method == "bot" {
@@ -819,6 +824,53 @@ func MeleeTopTen(ChannelID string) {
 	MeleeTopTenReply := &discordgo.MessageEmbed{
 		Color:       11534336,
 		Title:       "Top 10 Bots on Melee Ladder",
+		Description: strings.Join(list, " "),
+		Timestamp:   time.Now().Format(time.RFC3339),
+	}
+
+	dg.ChannelMessageSendEmbed(ChannelID, MeleeTopTenReply)
+}
+
+func MeleeTopSixteen(ChannelID string) {
+	db, err := sql.Open("mysql", viper.GetString("MysqlUser")+":"+viper.GetString("MysqlPass")+"@tcp("+viper.GetString("MysqlHost")+")/"+viper.GetString("MysqlDB"))
+	if err != nil {
+		log.Print(err.Error())
+	}
+	defer db.Close()
+
+	currentseasonid_results, err := db.Query("SELECT a.id FROM core_season a LEFT OUTER JOIN core_season b ON a.id = b.id AND a.number < b.number WHERE b.id IS NULL")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	currentseasonid := 0
+	for currentseasonid_results.Next() {
+		err = currentseasonid_results.Scan(&currentseasonid)
+		if err != nil {
+			panic(err.Error())
+		}
+	}
+
+	results, err := db.Query("SELECT name, elo FROM aiarena_beta.core_seasonparticipation sp inner join aiarena_beta.core_bot b on sp.bot_id = b.id where season_id = ? and active = 1 order by elo desc limit 16", currentseasonid)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	place := 0
+	list := []string{}
+	for results.Next() {
+		place++
+		var data TopTenStruct
+		err = results.Scan(&data.Name, &data.Elo)
+		if err != nil {
+			panic(err.Error())
+		}
+		list = append(list, "#"+strconv.Itoa(place)+" - "+data.Name+" - "+strconv.Itoa(data.Elo)+"\n")
+	}
+
+	MeleeTopTenReply := &discordgo.MessageEmbed{
+		Color:       11534336,
+		Title:       "Top 16 Bots on Melee Ladder",
 		Description: strings.Join(list, " "),
 		Timestamp:   time.Now().Format(time.RFC3339),
 	}
