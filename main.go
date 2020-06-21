@@ -166,8 +166,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			MeleeTopTen(m.ChannelID)
 		}
 
-		if method == "top16" {
-			MeleeTopSixteen(m.ChannelID)
+		if method == "top20" {
+			MeleeTopTwenty(m.ChannelID)
 		}
 
 		if method == "bot" {
@@ -831,7 +831,7 @@ func MeleeTopTen(ChannelID string) {
 	dg.ChannelMessageSendEmbed(ChannelID, MeleeTopTenReply)
 }
 
-func MeleeTopSixteen(ChannelID string) {
+func MeleeTopTwenty(ChannelID string) {
 	db, err := sql.Open("mysql", viper.GetString("MysqlUser")+":"+viper.GetString("MysqlPass")+"@tcp("+viper.GetString("MysqlHost")+")/"+viper.GetString("MysqlDB"))
 	if err != nil {
 		log.Print(err.Error())
@@ -851,7 +851,7 @@ func MeleeTopSixteen(ChannelID string) {
 		}
 	}
 
-	results, err := db.Query("SELECT name, elo FROM aiarena_beta.core_seasonparticipation sp inner join aiarena_beta.core_bot b on sp.bot_id = b.id where season_id = ? and active = 1 order by elo desc limit 16", currentseasonid)
+	results, err := db.Query("SELECT name, elo FROM aiarena_beta.core_seasonparticipation sp inner join aiarena_beta.core_bot b on sp.bot_id = b.id where season_id = ? and active = 1 order by elo desc limit 20", currentseasonid)
 	if err != nil {
 		panic(err.Error())
 	}
