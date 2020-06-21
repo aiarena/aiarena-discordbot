@@ -167,7 +167,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 
 		if method == "top16" {
-			MeleeTopSexteen(m.ChannelID)
+			MeleeTopSixteen(m.ChannelID)
 		}
 
 		if method == "bot" {
