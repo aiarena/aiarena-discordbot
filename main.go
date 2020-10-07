@@ -197,7 +197,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 		if method == "invite" {
 			s.ChannelMessageSend(m.ChannelID,
-				"Discord invite link: https://discord.gg/yDBzbtC")
+				"Discord invite link: https://discord.gg/4ehpBN")
 		}
 
 		if method == "refreshroles" {
