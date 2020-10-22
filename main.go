@@ -96,14 +96,14 @@ func handleResultPost(w http.ResponseWriter, r *http.Request) {
 	if result.Bot_a == result.Winner {
 		embed := &discordgo.MessageEmbed{
 			Color:       11534336, // Red Colour
-			Description: "Round [" + strconv.Itoa(result.RoundId) + "](https://ai-arena.net/rounds/" + strconv.Itoa(result.RoundId) + "/) - Match [" + strconv.Itoa(result.MatchId) + "](https://ai-arena.net/matches/" + strconv.Itoa(result.MatchId) + "/) - [**" + result.Bot_a + "**](https://ai-arena.net/bots/" + strconv.Itoa(result.Bot_a_id) + "/) vs [" + result.Bot_b + "](https://ai-arena.net/bots/" + strconv.Itoa(result.Bot_b_id) + "/) - [Download Replay](https://ai-arena.net" + result.Replay + ")",
+			Description: "Round [" + strconv.Itoa(result.RoundId) + "](https://aiarena.net/rounds/" + strconv.Itoa(result.RoundId) + "/) - Match [" + strconv.Itoa(result.MatchId) + "](https://aiarena.net/matches/" + strconv.Itoa(result.MatchId) + "/) - [**" + result.Bot_a + "**](https://aiarena.net/bots/" + strconv.Itoa(result.Bot_a_id) + "/) vs [" + result.Bot_b + "](https://aiarena.net/bots/" + strconv.Itoa(result.Bot_b_id) + "/) - [Download Replay](https://aiarena.net" + result.Replay + ")",
 		}
 		dg.ChannelMessageSendEmbed("571643904869269515", embed)
 
 	} else if result.Bot_b == result.Winner {
 		embed := &discordgo.MessageEmbed{
 			Color:       11534336, // Red Colour
-			Description: "Round [" + strconv.Itoa(result.RoundId) + "](https://ai-arena.net/rounds/" + strconv.Itoa(result.RoundId) + "/) - Match [" + strconv.Itoa(result.MatchId) + "](https://ai-arena.net/matches/" + strconv.Itoa(result.MatchId) + "/) - [" + result.Bot_a + "](https://ai-arena.net/bots/" + strconv.Itoa(result.Bot_a_id) + "/) vs [**" + result.Bot_b + "**](https://ai-arena.net/bots/" + strconv.Itoa(result.Bot_b_id) + "/) - [Download Replay](https://ai-arena.net" + result.Replay + ")",
+			Description: "Round [" + strconv.Itoa(result.RoundId) + "](https://aiarena.net/rounds/" + strconv.Itoa(result.RoundId) + "/) - Match [" + strconv.Itoa(result.MatchId) + "](https://aiarena.net/matches/" + strconv.Itoa(result.MatchId) + "/) - [" + result.Bot_a + "](https://aiarena.net/bots/" + strconv.Itoa(result.Bot_a_id) + "/) vs [**" + result.Bot_b + "**](https://aiarena.net/bots/" + strconv.Itoa(result.Bot_b_id) + "/) - [Download Replay](https://aiarena.net" + result.Replay + ")",
 		}
 		dg.ChannelMessageSendEmbed("571643904869269515", embed)
 
@@ -192,7 +192,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 		if method == "gs" || method == "gettingstarted" {
 			s.ChannelMessageSend(m.ChannelID,
-				"Getting started: https://ai-arena.net/wiki/bot-development/getting-started/")
+				"Getting started: https://aiarena.net/wiki/bot-development/getting-started/")
 		}
 
 		if method == "invite" {
@@ -224,7 +224,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 					KingslayerReply := &discordgo.MessageEmbed{
 						Color:       11534336,
 						Title:       "Flash Challenge: Kingslayer",
-						Description: "[" + viper.GetString("meleechampionbotname") + "](https://ai-arena.net/bots/" + viper.GetString("meleechampionbotid") + ") has won Flash Challenge: Kingslayer!",
+						Description: "[" + viper.GetString("meleechampionbotname") + "](https://aiarena.net/bots/" + viper.GetString("meleechampionbotid") + ") has won Flash Challenge: Kingslayer!",
 					}
 
 					dg.ChannelMessageSendEmbed(m.ChannelID, KingslayerReply)
@@ -233,7 +233,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 					KingslayerReply := &discordgo.MessageEmbed{
 						Color:       11534336,
 						Title:       "Flash Challenge: Kingslayer",
-						Description: "Current King: [" + viper.GetString("meleechampionbotname") + "](https://ai-arena.net/bots/" + viper.GetString("meleechampionbotid") + ")" + "\nReign duration: " + strconv.Itoa(day) + "d " + strconv.Itoa(hour) + "h " + strconv.Itoa(min) + "m",
+						Description: "Current King: [" + viper.GetString("meleechampionbotname") + "](https://aiarena.net/bots/" + viper.GetString("meleechampionbotid") + ")" + "\nReign duration: " + strconv.Itoa(day) + "d " + strconv.Itoa(hour) + "h " + strconv.Itoa(min) + "m",
 					}
 
 					dg.ChannelMessageSendEmbed(m.ChannelID, KingslayerReply)
@@ -424,12 +424,12 @@ func BotInfo(botname string, ChannelID string) {
 			BotInfoReply := &discordgo.MessageEmbed{
 				Color:       11534336,
 				Title:       botdata.Name,
-				Description: "Author: " + authordata.Name + "\nRace: " + fullrace + "\nELO: " + strconv.Itoa(botdata.Elo) + "\nType: " + botdata.Type + "\n[Bot page](https://ai-arena.net/bots/" + strconv.Itoa(botdata.BotID) + ")",
+				Description: "Author: " + authordata.Name + "\nRace: " + fullrace + "\nELO: " + strconv.Itoa(botdata.Elo) + "\nType: " + botdata.Type + "\n[Bot page](https://aiarena.net/bots/" + strconv.Itoa(botdata.BotID) + ")",
 				Thumbnail: &discordgo.MessageEmbedThumbnail{
-					URL: "https://ai-arena.net/media/" + avatardata.Avatar,
+					URL: "https://aiarena.net/media/" + avatardata.Avatar,
 				},
 				Image: &discordgo.MessageEmbedImage{
-					URL: "https://ai-arena.net/media/graphs/" + strconv.Itoa(currentseasonid) + "_" + strconv.Itoa(botdata.BotID) + "_" + botdata.Name + ".png?t=" + time.Now().Format("20060102150405"),
+					URL: "https://aiarena.net/media/graphs/" + strconv.Itoa(currentseasonid) + "_" + strconv.Itoa(botdata.BotID) + "_" + botdata.Name + ".png?t=" + time.Now().Format("20060102150405"),
 				},
 			}
 
@@ -525,12 +525,12 @@ func BotInfo(botname string, ChannelID string) {
 				BotInfoReply := &discordgo.MessageEmbed{
 					Color:       11534336,
 					Title:       botdata.Name,
-					Description: "Author: " + authordata.Name + "\nRace: " + fullrace + "\nCreated: " + botdata.Created + "\nELO: " + strconv.Itoa(botdata.Elo) + "\nType: " + botdata.Type + "\n[Bot page](https://ai-arena.net/bots/" + strconv.Itoa(botdata.BotID) + ")",
+					Description: "Author: " + authordata.Name + "\nRace: " + fullrace + "\nCreated: " + botdata.Created + "\nELO: " + strconv.Itoa(botdata.Elo) + "\nType: " + botdata.Type + "\n[Bot page](https://aiarena.net/bots/" + strconv.Itoa(botdata.BotID) + ")",
 					Thumbnail: &discordgo.MessageEmbedThumbnail{
-						URL: "https://ai-arena.net/media/" + avatardata.Avatar,
+						URL: "https://aiarena.net/media/" + avatardata.Avatar,
 					},
 					Image: &discordgo.MessageEmbedImage{
-						URL: "https://ai-arena.net/media/graphs/" + strconv.Itoa(currentseasonid) + "_" + strconv.Itoa(botdata.BotID) + "_" + botdata.Name + ".png?t=" + time.Now().Format("20060102150405"),
+						URL: "https://aiarena.net/media/graphs/" + strconv.Itoa(currentseasonid) + "_" + strconv.Itoa(botdata.BotID) + "_" + botdata.Name + ".png?t=" + time.Now().Format("20060102150405"),
 					},
 				}
 
