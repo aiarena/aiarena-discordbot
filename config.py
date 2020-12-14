@@ -3,8 +3,8 @@ BOT_PREFIX = ("")
 TOKEN = "redacted"
 APPLICATION_ID = "redacted"
 OWNERS = [55]
+BLACKLIST = []
 
- # Default cogs that I have created for the template
 STARTUP_COGS = [
-    "cogs.general", "cogs.help", "cogs.urls"
+    "cogs.general", "cogs.help", "cogs.urls", "cogs.ladder"
 ]
