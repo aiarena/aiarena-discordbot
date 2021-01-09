@@ -26,12 +26,16 @@ class URLS(commands.Cog, name="urls"):
         await context.send("Getting started: https://aiarena.net/wiki/bot-development/getting-started/")
 
     @commands.command(name="!trello")
-    async def stream(self, context):
+    async def trello(self, context):
         await context.send("Trello boards:\n"+
 					        "General/misc: https://trello.com/b/ykMT2vyR/ai-arena-general\n"+
 					        "Website: https://trello.com/b/qw4DYU9H/ai-arena-website\n"+
 					        "Arena Client: https://trello.com/b/a7cUfzl0/ai-arena-client\n"+
 					        "Devop: https://trello.com/b/Tu2GR6gn/ai-arena-devop")
+
+    @commands.command(name="!stream")
+    async def stream(self, context):
+        await context.send("Time until the next stream: https://www.timeanddate.com/worldclock/fixedtime.html?msg=stream&iso=20201027T21&p1=101&ah=1&am=30")
 
 def setup(bot):
     bot.add_cog(URLS(bot))
