@@ -9,23 +9,23 @@ class URLS(commands.Cog, name="urls"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="!invite")
+    @commands.command(name="invite")
     async def invite(self, context):
         await context.send("https://discordapp.com/invite/Emm5Ztz")
 
-    @commands.command(name="!stream")
+    @commands.command(name="stream")
     async def stream(self, context):
         await context.send("Stream URL: <https://www.twitch.tv/aiarenastream>")
 
-    @commands.command(name="!gs")
+    @commands.command(name="gs")
     async def gs(self, context):
         await context.send("Getting started: https://aiarena.net/wiki/bot-development/getting-started/")
 
-    @commands.command(name="!gettingstarted")
+    @commands.command(name="gettingstarted")
     async def getting_started(self, context):
         await context.send("Getting started: https://aiarena.net/wiki/bot-development/getting-started/")
 
-    @commands.command(name="!trello")
+    @commands.command(name="trello")
     async def stream(self, context):
         await context.send("Trello boards:\n"+
 					        "General/misc: https://trello.com/b/ykMT2vyR/ai-arena-general\n"+
