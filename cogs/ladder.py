@@ -68,20 +68,20 @@ class Ladder(commands.Cog, name="urls"):
     @commands.command(name="top10")
     async def top10(self, context):
         response1 = requests.get(
-            "https://aiarena.net/api/competition-participations/?competition=2&ordering=-elo&limit=10", headers=auth)
+            "https://aiarena.net/api/competition-participations/?competition=3&ordering=-elo&limit=10", headers=auth)
         if response1.status_code != 200:
             print("get error 1")
         bots = json.loads(response1.text)
 
         bot_infos = []
-        for bot in bots["results"]:
-            b_id = bot["id"]
+        for participant in bots["results"]:
+            b_id = participant["bot"]
             response2 = requests.get(
                 f"https://aiarena.net/api/bots/{b_id}/", headers=auth)
             if response2.status_code != 200:
                 print("get error 2")
             info = json.loads(response2.text)
-            bot_infos.append((info["name"], bot["elo"]))
+            bot_infos.append((info["name"], participant["elo"]))
 
         embed = discord.Embed(
             title="Leaderboard",
