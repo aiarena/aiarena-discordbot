@@ -9,7 +9,7 @@ class Help(commands.Cog, name="help"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="!help")
+    @commands.command(name="help")
     async def help(self, context):
         # Note that commands made only for the owner of the bot are not listed here.
         embed = discord.Embed(
@@ -45,6 +45,16 @@ class Help(commands.Cog, name="help"):
             name="!gs || !gettingstarted",
             value="Shows getting started infos.",
             inline=False
+        )
+        embed.add_field(
+            name="!GG <bot> || !gg <bot>",
+            value="Creates and uploads a replay pack of <bot>'s last 5 games.",
+            inline=False
+        )
+        embed.add_field(
+            name="!getbetter <bot>",
+            value="Creates and uploads a replay pack of <bot>'s last 5 unique losses.",
+            inline=False,
         )
         await context.send(embed=embed)
 
