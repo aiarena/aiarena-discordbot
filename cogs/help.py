@@ -35,10 +35,6 @@ class Help(commands.Cog, name="help"):
         embed.add_field(
             name="!bot <bot name>",
             value="Shows Bot information.",
-            inline=False)
-        embed.add_field(
-            name="!trello",
-            value="Shows Trello board links.",
             inline=False
         )
         embed.add_field(
