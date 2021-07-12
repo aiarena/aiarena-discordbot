@@ -14,6 +14,7 @@ RUN apt-get install --assume-yes --no-install-recommends --no-show-upgraded \
 RUN wget -O aiarena-discordbot.zip https://github.com/aiarena/aiarena-discordbot/archive/refs/heads/master.zip
 RUN unzip aiarena-discordbot.zip -d /tmp/aiarena-discordbot/
 RUN mv /tmp/aiarena-discordbot/aiarena-discordbot-master/ /root/aiarena-discordbot/
+RUN rm -r /tmp/aiarena-discordbot/
 RUN pip install -r /root/aiarena-discordbot/requirements.txt
 
 WORKDIR /root/aiarena-discordbot/
