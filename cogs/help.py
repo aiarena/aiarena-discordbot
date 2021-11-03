@@ -5,6 +5,7 @@ if not os.path.isfile("config.py"):
 else:
     import config
 
+
 class Help(commands.Cog, name="help"):
     def __init__(self, bot):
         self.bot = bot
@@ -43,16 +44,18 @@ class Help(commands.Cog, name="help"):
             inline=False
         )
         embed.add_field(
-            name="!GG <bot> || !gg <bot>",
-            value="Creates and uploads a replay pack of <bot>'s last 5 games.",
+            name="!gg <bot_name> <num_replays> optional: --loss",
+            value="Creates and uploads a replay pack of <bot_name>'s last <num_replays> games. If \"--loss\" is"
+                  "specified, the replays will be only of games where the bot lossed.",
             inline=False
         )
         embed.add_field(
-            name="!getbetter <bot>",
-            value="Creates and uploads a replay pack of <bot>'s last 5 unique losses.",
-            inline=False,
+            name="!tag <tag_name> <num_days>",
+            value="Creates and uploads a replay pack of matches with the tag <tag_name> from the last <num_days>",
+            inline=False
         )
-        await context.send(embed=embed)
+        await context.reply(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Help(bot))
