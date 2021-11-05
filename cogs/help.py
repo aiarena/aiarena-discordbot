@@ -5,6 +5,7 @@ if not os.path.isfile("config.py"):
 else:
     import config
 
+
 class Help(commands.Cog, name="help"):
     def __init__(self, bot):
         self.bot = bot
@@ -34,7 +35,11 @@ class Help(commands.Cog, name="help"):
         )
         embed.add_field(
             name="!bot <bot name>",
-            value="Shows Bot information.",
+            value="Shouws Bot information.",
+            inline=False)
+        embed.add_field(
+            name="!trello",
+            value="Shows Trello board links.",
             inline=False
         )
         embed.add_field(
@@ -43,16 +48,16 @@ class Help(commands.Cog, name="help"):
             inline=False
         )
         embed.add_field(
-            name="!GG <bot> || !gg <bot>",
-            value="Creates and uploads a replay pack of <bot>'s last 5 games.",
+            name="!gg <bot_name> <num_days>  optional arguments: --loss --tag <tag_name>",
+            value="Creates and uploads a replay pack of <bot_name>'s last <num_days> games. If \"--loss\" is"
+                  "specified, the replays will be only of games where the bot lossed."
+                  "If \"--tag <tag_name>\" is specified, only replays tagged with <tag_name> will be included"
+                  "If \"--limit <num_replays>\" is specified, only <num_replays> will be sent"
+                  "Note: Only the previous 250 matches of any bot will be looked at",
             inline=False
         )
-        embed.add_field(
-            name="!getbetter <bot>",
-            value="Creates and uploads a replay pack of <bot>'s last 5 unique losses.",
-            inline=False,
-        )
-        await context.send(embed=embed)
+        await context.reply(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Help(bot))
