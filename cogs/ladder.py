@@ -91,8 +91,8 @@ class Ladder(commands.Cog, name="urls"):
 
     @commands.command(name="gg")
     async def gg(self, context):
-        if len(str(context.message.content).split(" ")) not in [3, 4, 6, 8]:
-            raise Exception("Usage: !gg <bot_name> <num_days> optional --loss --tag <tag_name> --limit <num_replays>")
+        # if len(str(context.message.content).split(" ")) not in [3, 4, 6, 8]:
+        #     raise Exception("Usage: !gg <bot_name> <num_days> optional --loss --tag <tag_name> --limit <num_replays>")
         args = str(context.message.content).split(" ")
         bot_name = args[1]
         bot_id = ai_arena_api.get_bot_id_by_name(bot_name)

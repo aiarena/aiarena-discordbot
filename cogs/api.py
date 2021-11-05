@@ -39,10 +39,13 @@ def get_bot_info(bot_id: str) -> dict:
 def download_replay(replay_file: str, won: str, file_path: str):
     if replay_file is None:
         return False
+    result = "won"
+    if not won:
+        result = "loss"
     response = requests.get(replay_file, headers=config.AUTH)
     if response.status_code != 200:
         raise APIException(f"Failed to get replay {replay_file}.", replay_file, response)
-    with open(os.path.join(file_path, replay_file.split('/')[-1] + "___" + won + '.SC2Replay'), 'wb') as f:
+    with open(os.path.join(file_path, replay_file.split('/')[-1] + "___" + result + '.SC2Replay'), 'wb') as f:
         f.write(response.content)
     return True
 
