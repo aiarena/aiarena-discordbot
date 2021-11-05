@@ -36,7 +36,7 @@ def get_bot_info(bot_id: str) -> dict:
     return json.loads(response.text)
 
 
-def download_replay(replay_file: str, won: str, file_path: str):
+def download_replay(replay_file: str, won: bool, file_path: str):
     if replay_file is None:
         return False
     result = "won"
@@ -88,7 +88,7 @@ def get_bot_matches(bot_name: str, bot_id: str, days: int, only_losses: bool, ta
                 continue
 
             # download the replay and check if we have enough replays to early exit
-            if download_replay(match["result"]["replay_file"], str(won), file_path):
+            if download_replay(match["result"]["replay_file"], won, file_path):
                 num_files += 1
                 if num_files >= limit:
                     break
