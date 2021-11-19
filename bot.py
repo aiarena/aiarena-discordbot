@@ -45,6 +45,7 @@ async def on_message(message):
 	else:
 		if message.content.startswith("!"):
 			message_hashes[hash(message)] = message
+			await message.add_reaction(config.HOURGLASS_EMOJI)
 			await bot.process_commands(message)
 
 
@@ -55,6 +56,7 @@ async def on_command_completion(ctx):
 	split = fullCommandName.split(" ")
 	executedCommand = str(split[0])
 
+	await message_hashes[hash(ctx.message)].clear_reaction(config.HOURGLASS_EMOJI)
 	await message_hashes[hash(ctx.message)].add_reaction(config.GOOD_EMOJI)
 	del message_hashes[hash(ctx.message)]
 	print(f"Executed {executedCommand} command in {ctx.guild.name} by {ctx.message.author} (ID: {ctx.message.author.id})")
@@ -63,6 +65,7 @@ async def on_command_completion(ctx):
 # The code in this event is executed every time a valid commands catches an error
 @bot.event
 async def on_command_error(context, error):
+	await message_hashes[hash(context.message)].clear_reaction(config.HOURGLASS_EMOJI)
 	await message_hashes[hash(context.message)].add_reaction(config.FAILED_EMOJI)
 	await message_hashes[hash(context.message)].reply(str(error.original))
 	del message_hashes[hash(context.message)]

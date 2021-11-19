@@ -18,6 +18,13 @@ class Ladder(commands.Cog, name="urls"):
     def __init__(self, bot):
         self.bot = bot
 
+    async def get_discord_name(self, context, discord_id: str):
+        print(await self.bot.get_user(247173348319035394))
+        discord_user = await context.message.guild.get_member(247173348319035394)
+        # discord_user = await context.message.server.get_member(discord_id)
+        print(discord_user.nick)
+        return discord_user.nick
+
     @staticmethod
     async def send_files(context, directory: str):
         if len(glob.glob(directory + '/*.SC2Replay')) == 0:
@@ -74,7 +81,6 @@ class Ladder(commands.Cog, name="urls"):
             b_id = participant["bot"]
             bot_info = ai_arena_api.get_bot_info(b_id)
             bot_infos.append((bot_info["name"], participant["elo"]))
-
         embed = discord.Embed(
             title="Leaderboard",
             description="Top 16 Bots",
@@ -133,10 +139,23 @@ class Ladder(commands.Cog, name="urls"):
                 bot_info["elo"] = info["elo"]
                 bot_info["rank"] = i + 1
                 break
+        print(bot_info["author_info"])
+        author_name = bot_info["author_info"][0] + " - AI Arena"
+        # author on discord, get discord name
+        if bot_info["author_info"][1]:
+            author_name = await self.bot.fetch_user(bot_info["author_info"][0])
+            author_name = author_name.name + " - Discord"
+
+        print(author_name)
         embed = discord.Embed(
             title=f"{bot_name}",
             description="Bot Information",
             color=0x00FF00
+        )
+        embed.add_field(
+            name="Author",
+            value=author_name,
+            inline=False
         )
         embed.add_field(
             name="Race",

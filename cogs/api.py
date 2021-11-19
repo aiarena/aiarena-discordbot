@@ -12,7 +12,37 @@ else:
 from cogs.exceptions import APIException
 
 
+# [name str] => bot id
 bot_ids = {}
+
+# [ai arena id] => [user name, True]
+# [user name, discord linked = false]
+# [discord id, discord linked = True]
+author_names = {}
+
+
+def get_author_name_by_id(user_id: str):
+    if user_id not in author_names.keys():
+        request_url = f"{config.DISCORD_USER_INFO}?user={user_id}"
+        response = requests.get(request_url, headers=config.AUTH)
+        user = json.loads(response.text)
+        if response.status_code != 200 or len(user["results"]) == 0:
+            print(f"AI Arena id {user_id} does not have a linked discord account, "
+                  f"falling back to getting ai arena name", request_url, response)
+            request_url = f"{config.USER_INFO}/{user_id}"
+            response = requests.get(request_url, headers=config.AUTH)
+            if response.status_code != 200:
+                raise APIException(f"An AI Arena user with id {user_id} could not be found. CRITICAL ERROR,"
+                                   f"this ID is tied to a bot, but the id doesn't exist", request_url, response)
+            user = json.loads(response.text)
+            author_names[user_id] = [user["username"], False]
+            print(author_names[user_id])
+            return author_names[user_id]
+        # discord id exists
+        else:
+            author_names[user_id] = [user["results"][0]["uid"], False]
+            author_names[user_id][1] = True
+    return author_names[user_id]
 
 
 def get_bot_id_by_name(bot_name: str):
@@ -33,7 +63,9 @@ def get_bot_info(bot_id: str) -> dict:
     response = requests.get(request_url, headers=config.AUTH)
     if response.status_code != 200:
         raise APIException(f"A bot with id {bot_id} could not be located.", request_url, response)
-    return json.loads(response.text)
+    bot_info = json.loads(response.text)
+    bot_info["author_info"] = get_author_name_by_id(bot_info["user"])
+    return bot_info
 
 
 def download_replay(replay_file: str, won: bool, file_path: str):
