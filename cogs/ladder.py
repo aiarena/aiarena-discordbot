@@ -1,4 +1,4 @@
-import discord, json, glob, os, requests, shutil, sys
+import argparse, discord, json, glob, os, requests, shutil, sys
 from discord.ext import commands
 if not os.path.isfile("config.py"):
     sys.exit("'config.py' not found! Please add it and try again.")
@@ -18,11 +18,10 @@ class Ladder(commands.Cog, name="urls"):
     def __init__(self, bot):
         self.bot = bot
 
+    @staticmethod
     async def get_discord_name(self, context, discord_id: str):
-        print(await self.bot.get_user(247173348319035394))
-        discord_user = await context.message.guild.get_member(247173348319035394)
-        # discord_user = await context.message.server.get_member(discord_id)
-        print(discord_user.nick)
+        discord_user = await context.message.guild.get_member(discord_id)
+        print(discord_user)
         return discord_user.nick
 
     @staticmethod
@@ -97,25 +96,22 @@ class Ladder(commands.Cog, name="urls"):
 
     @commands.command(name="gg")
     async def gg(self, context):
-        # if len(str(context.message.content).split(" ")) not in [3, 4, 6, 8]:
-        #     raise Exception("Usage: !gg <bot_name> <num_days> optional --loss --tag <tag_name> --limit <num_replays>")
-        args = str(context.message.content).split(" ")
-        bot_name = args[1]
-        bot_id = ai_arena_api.get_bot_id_by_name(bot_name)
-        days = int(args[2])
-        only_losses = "--loss" in str(context.message.content)
-        tag = ""
-        if "--tag" in str(context.message.content):
-            for i, arg in enumerate(args):
-                if arg == "--tag":
-                    tag = args[i+1]
+        parser = argparse.ArgumentParser(prog='gg')
+        parser.add_argument('bot_name', type=str, help='bot name')
+        parser.add_argument('days', type=int, help='number of days')
+        parser.add_argument('--limit', required=False, type=int, default=5, help='max number of replays to query')
+        parser.add_argument('--losses', required=False, default=False, action='store_true')
+        parser.add_argument('--tag', required=False, type=str, default="", help='tag to look for')
 
-        limit = 999
-        if "--limit" in str(context.message.content):
-            for i, arg in enumerate(args):
-                if arg == "--limit":
-                    limit = int(args[i+1])
-        replays = ai_arena_api.get_bot_matches(bot_name, bot_id, days, only_losses, tag, limit)
+        args, unknown = parser.parse_known_args(context.message.content.split()[1:])
+        print(args, unknown)
+        if unknown:
+            await context.reply("!gg <bot_name> <num_days>  optional arguments: "
+                                "--limit <max_replays> --losses --tag <tag_name>")
+            return
+
+        bot_id = ai_arena_api.get_bot_id_by_name(args.bot_name)
+        replays = ai_arena_api.get_bot_matches(args.bot_name, bot_id, args.days, args.losses, args.tag, args.limit)
         await self.send_files(context, replays)
 
     @commands.command(name="bot")
@@ -126,6 +122,8 @@ class Ladder(commands.Cog, name="urls"):
         bot_name = str(context.message.content).split(" ")[1]
         bot_id = ai_arena_api.get_bot_id_by_name(bot_name)
         bot_info = ai_arena_api.get_bot_info(bot_id)
+        elo_change = ai_arena_api.get_elo_change(bot_name, bot_id, bot_info["bot_zip_updated"])
+
         # Have to linearly traverse the competition participants in descending ELO order to get this bot's rank
         # The API could be improved to prevent having to do this.
         response = requests.get(config.LADDER_RANKS, headers=config.AUTH)
@@ -139,14 +137,13 @@ class Ladder(commands.Cog, name="urls"):
                 bot_info["elo"] = info["elo"]
                 bot_info["rank"] = i + 1
                 break
-        print(bot_info["author_info"])
+
         author_name = bot_info["author_info"][0] + " - AI Arena"
         # author on discord, get discord name
         if bot_info["author_info"][1]:
             author_name = await self.bot.fetch_user(bot_info["author_info"][0])
             author_name = author_name.name + " - Discord"
 
-        print(author_name)
         embed = discord.Embed(
             title=f"{bot_name}",
             description="Bot Information",
@@ -170,6 +167,11 @@ class Ladder(commands.Cog, name="urls"):
         embed.add_field(
             name="ELO",
             value=bot_info["elo"],
+            inline=False
+        )
+        embed.add_field(
+            name="ELO Change since last update",
+            value=elo_change,
             inline=False
         )
         embed.add_field(

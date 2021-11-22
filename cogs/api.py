@@ -82,6 +82,42 @@ def download_replay(replay_file: str, won: bool, file_path: str):
     return True
 
 
+def get_match_by_id(match_id: str):
+    request_url = f"{config.MATCHES}?id={match_id}"
+    response = requests.get(request_url, headers=config.AUTH)
+    if response.status_code != 200:
+        raise APIException(f"Failed to match {match_id}.", request_url, response)
+    return json.loads(response.text)["results"][0]
+
+
+def get_elo_change(bot_name: str, bot_id: str, days: str):
+    elo_change = 0
+
+    year, month, day = days.split('-')
+    day = day.split('T')[0]
+    start = datetime.datetime(int(year), int(month), int(day))
+
+    request_url = f"{config.MATCH_PARTICIPATION}?bot={bot_id}&ordering=-match&limit=250"
+    response = requests.get(request_url, headers=config.AUTH)
+    if response.status_code != 200:
+        raise APIException(f"Failed to get matches for bot id {bot_name}.", request_url, response)
+    matches = json.loads(response.text)["results"]
+    for match in matches:
+        # is the match recent enough?
+        match_details = get_match_by_id(match["match"])
+        year, month, day = match_details["created"].split('-')
+        day = day.split('T')[0]
+        match_date = datetime.datetime(int(year), int(month), int(day))
+
+        if match_date < start:
+            break
+
+        if match["elo_change"] is not None:
+            elo_change += match["elo_change"]
+            
+    return elo_change
+
+
 def get_bot_matches(bot_name: str, bot_id: str, days: int, only_losses: bool, tag: str, limit: int) -> str:
     letters = string.ascii_lowercase
     file_path = config.REPLAYS_DIR + ''.join(random.choice(letters) for i in range(10))
