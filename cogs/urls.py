@@ -16,7 +16,7 @@ class URLS(commands.Cog, name="urls"):
 
     @commands.command(name="stream")
     async def stream(self, context):
-        await context.reply("Stream URL: <https://www.twitch.tv/aiarenastream>")
+        await context.reply("Stream URL: https://www.twitch.tv/aiarenastream")
 
     @commands.command(name="gs")
     async def gs(self, context):
@@ -31,7 +31,7 @@ class URLS(commands.Cog, name="urls"):
         await context.reply("https://everytimezone.com/s/36096de8")
 
     @commands.command(name="trello")
-    async def stream(self, context):
+    async def trello(self, context):
         await context.reply("Trello boards:\n"+
                             "General/misc: https://trello.com/b/ykMT2vyR/ai-arena-general\n"+
                             "Website: https://trello.com/b/qw4DYU9H/ai-arena-website\n"+

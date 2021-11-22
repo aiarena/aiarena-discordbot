@@ -114,7 +114,7 @@ def get_elo_change(bot_name: str, bot_id: str, days: str):
 
         if match["elo_change"] is not None:
             elo_change += match["elo_change"]
-            
+
     return elo_change
 
 
