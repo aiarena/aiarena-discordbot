@@ -4,11 +4,39 @@ if not os.path.isfile("config.py"):
     sys.exit("'config.py' not found! Please add it and try again.")
 else:
     import config
+from cogs.api import get_discord_users, get_patreon_users, get_bot_author_users
 
 
 class Help(commands.Cog, name="help"):
     def __init__(self, bot):
         self.bot = bot
+
+    async def clear_all_users(self, role):
+        for member in role.members:
+            await member.remove_roles(role)
+
+    async def add_role(self, member_id: int, role):
+        user = discord.utils.get(self.bot.get_all_members(), id=member_id)
+        await user.add_roles(role)
+
+    @commands.command(name="update_roles")
+    async def update_roles(self, context):
+        # clear all users in both roles
+        for role_id in [config.BOT_AUTHOR_ID, config.DONATOR_ID]:
+            role = discord.utils.get(context.guild.roles, id=role_id)
+            await self.clear_all_users(role)
+            
+        discord_users_dict = get_discord_users()
+
+        patreon_users = get_patreon_users()
+        patreon_users_discord = set(discord_users_dict.keys()).intersection(patreon_users)
+        bot_authors = get_bot_author_users()
+        bot_authors_discord = set(discord_users_dict.keys()).intersection(bot_authors)
+
+        for role_id, users in zip([config.BOT_AUTHOR_ID, config.DONATOR_ID], [bot_authors_discord, patreon_users_discord]):
+            role = discord.utils.get(context.guild.roles, id=role_id)
+            for user_id in users:
+                await self.add_role(user_id, role)
 
     @commands.command(name="help")
     async def help(self, context):
