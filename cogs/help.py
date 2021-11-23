@@ -25,13 +25,29 @@ class Help(commands.Cog, name="help"):
         for role_id in [config.BOT_AUTHOR_ID, config.DONATOR_ID]:
             role = discord.utils.get(context.guild.roles, id=role_id)
             await self.clear_all_users(role)
-            
+
         discord_users_dict = get_discord_users()
 
         patreon_users = get_patreon_users()
-        patreon_users_discord = set(discord_users_dict.keys()).intersection(patreon_users)
+        patreon_users_discord = []
+        patreon_users_discord_names = []
+        for patreon_user in patreon_users:
+            if patreon_user in discord_users_dict.keys():
+                discord_name = await self.bot.fetch_user(discord_users_dict[patreon_user])
+                patreon_users_discord_names.append(discord_name.name)
+                patreon_users_discord.append(discord_users_dict[patreon_user])
+
         bot_authors = get_bot_author_users()
-        bot_authors_discord = set(discord_users_dict.keys()).intersection(bot_authors)
+        bot_authors_discord = []
+        bot_authors_discord_names = []
+        for bot_author in bot_authors:
+            if bot_author in discord_users_dict.keys():
+                discord_name = await self.bot.fetch_user(discord_users_dict[bot_author])
+                bot_authors_discord_names.append(discord_name.name)
+                bot_authors_discord.append(discord_users_dict[bot_author])
+
+        print(f"adding patreon role to users: {patreon_users_discord_names}")
+        print(f"adding bot author roles to users: {bot_authors_discord_names}")
 
         for role_id, users in zip([config.BOT_AUTHOR_ID, config.DONATOR_ID], [bot_authors_discord, patreon_users_discord]):
             role = discord.utils.get(context.guild.roles, id=role_id)
