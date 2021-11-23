@@ -55,7 +55,7 @@ async def on_command_completion(ctx):
 	fullCommandName = ctx.command.qualified_name
 	split = fullCommandName.split(" ")
 	executedCommand = str(split[0])
-
+	print(bot)
 	await message_hashes[hash(ctx.message)].clear_reaction(config.HOURGLASS_EMOJI)
 	await message_hashes[hash(ctx.message)].add_reaction(config.GOOD_EMOJI)
 	del message_hashes[hash(ctx.message)]

@@ -21,7 +21,6 @@ class Ladder(commands.Cog, name="urls"):
     @staticmethod
     async def get_discord_name(self, context, discord_id: str):
         discord_user = await context.message.guild.get_member(discord_id)
-        print(discord_user)
         return discord_user.nick
 
     @staticmethod
