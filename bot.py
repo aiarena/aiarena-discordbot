@@ -55,8 +55,8 @@ async def on_command_completion(ctx):
 	fullCommandName = ctx.command.qualified_name
 	split = fullCommandName.split(" ")
 	executedCommand = str(split[0])
-	print(bot)
-	await message_hashes[hash(ctx.message)].clear_reaction(config.HOURGLASS_EMOJI)
+	user = discord.utils.get(bot.get_all_members(), id=787891461366480927)
+	await message_hashes[hash(ctx.message)].remove_reaction(config.HOURGLASS_EMOJI, member=user)
 	await message_hashes[hash(ctx.message)].add_reaction(config.GOOD_EMOJI)
 	del message_hashes[hash(ctx.message)]
 	print(f"Executed {executedCommand} command in {ctx.guild.name} by {ctx.message.author} (ID: {ctx.message.author.id})")
@@ -65,7 +65,8 @@ async def on_command_completion(ctx):
 # The code in this event is executed every time a valid commands catches an error
 @bot.event
 async def on_command_error(context, error):
-	await message_hashes[hash(context.message)].clear_reaction(config.HOURGLASS_EMOJI)
+	user = discord.utils.get(bot.get_all_members(), id=787891461366480927)
+	await message_hashes[hash(context.message)].remove_reaction(config.HOURGLASS_EMOJI, member=user)
 	await message_hashes[hash(context.message)].add_reaction(config.FAILED_EMOJI)
 	await message_hashes[hash(context.message)].reply(str(error.original))
 	del message_hashes[hash(context.message)]
