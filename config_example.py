@@ -7,6 +7,7 @@ API_TOKEN = "redacted"
 APPLICATION_ID = "redacted"
 OWNERS = [1234]
 BLACKLIST = []
+BOT_DISCORD_ID = 1234
 
 AUTH = {'Authorization': f'Token {API_TOKEN}'}
 
