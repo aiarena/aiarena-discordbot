@@ -17,7 +17,10 @@ class Help(commands.Cog, name="help"):
 
     async def add_role(self, member_id: int, role):
         user = discord.utils.get(self.bot.get_all_members(), id=member_id)
-        await user.add_roles(role)
+        if user is not None:
+            await user.add_roles(role)
+        else:
+            print(f"could not find user id {member_id} for this server.")
 
     @commands.command(name="update_roles")
     async def update_roles(self, context):
@@ -29,7 +32,7 @@ class Help(commands.Cog, name="help"):
         #     await self.clear_all_users(role)
         role = discord.utils.get(context.guild.roles, id=config.ROLES_IDS[guild_id][1])
         await self.clear_all_users(role)
-        
+
         discord_users_dict = get_discord_users()
 
         patreon_users = get_patreon_users()
