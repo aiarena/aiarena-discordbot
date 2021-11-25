@@ -30,7 +30,7 @@ def get_patreon_users():
 
     patrean_users = []
     for user in users:
-        if user["patreon_level"]:
+        if user["patreon_level"] is not None:
             patrean_users.append(user["id"])
 
     return patrean_users
