@@ -27,7 +27,9 @@ class Help(commands.Cog, name="help"):
         # for role_id in config.ROLES_IDS[guild_id]:
         #     role = discord.utils.get(context.guild.roles, id=role_id)
         #     await self.clear_all_users(role)
-
+        role = discord.utils.get(context.guild.roles, id=config.ROLES_IDS[guild_id][1])
+        await self.clear_all_users(role)
+        
         discord_users_dict = get_discord_users()
 
         patreon_users = get_patreon_users()
