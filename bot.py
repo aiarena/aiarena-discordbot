@@ -1,3 +1,5 @@
+import traceback
+
 import discord, asyncio, os, platform, sys
 from discord.ext.commands import Bot
 from discord.ext import commands
@@ -65,6 +67,7 @@ async def on_command_completion(ctx):
 # The code in this event is executed every time a valid commands catches an error
 @bot.event
 async def on_command_error(context, error):
+	traceback.print_stack()
 	print(error)
 	user = discord.utils.get(bot.get_all_members(), id=config.BOT_DISCORD_ID)
 	await message_hashes[hash(context.message)].remove_reaction(config.HOURGLASS_EMOJI, member=user)
