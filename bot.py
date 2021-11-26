@@ -66,10 +66,14 @@ async def on_command_completion(ctx):
 @bot.event
 async def on_command_error(context, error):
 	print(error)
+
 	user = discord.utils.get(bot.get_all_members(), id=config.BOT_DISCORD_ID)
 	await message_hashes[hash(context.message)].remove_reaction(config.HOURGLASS_EMOJI, member=user)
 	await message_hashes[hash(context.message)].add_reaction(config.FAILED_EMOJI)
-	await message_hashes[hash(context.message)].reply(str(error.original))
+	if isinstance(error, discord.ext.commands.errors.CommandNotFound):
+		await message_hashes[hash(context.message)].reply("Command not found!")
+	else:
+		await message_hashes[hash(context.message)].reply(str(error.original))
 	del message_hashes[hash(context.message)]
 
 # Run the bot with the token

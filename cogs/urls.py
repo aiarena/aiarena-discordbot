@@ -18,6 +18,10 @@ class URLS(commands.Cog, name="urls"):
     async def stream(self, context):
         await context.reply("Stream URL: https://www.twitch.tv/aiarenastream")
 
+    @commands.command(name="maps")
+    async def maps(self, context):
+        await context.reply("Maps for the season: https://aiarena.net/wiki/maps/")
+
     @commands.command(name="gs")
     async def gs(self, context):
         await context.reply("Getting started: https://aiarena.net/wiki/bot-development/getting-started/")

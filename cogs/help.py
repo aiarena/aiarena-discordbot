@@ -100,11 +100,8 @@ class Help(commands.Cog, name="help"):
         )
         embed.add_field(
             name="!gg <bot_name> <num_days>  optional arguments: --loss --tag <tag_name>",
-            value="Creates and uploads a replay pack of <bot_name>'s last <num_days> games. If \"--loss\" is"
-                  "specified, the replays will be only of games where the bot lossed."
-                  "If \"--tag <tag_name>\" is specified, only replays tagged with <tag_name> will be included"
-                  "If \"--limit <num_replays>\" is specified, only <num_replays> will be sent"
-                  "Note: Only the previous 250 matches of any bot will be looked at",
+            value="Creates and uploads a replay pack of <bot_name>'s last <num_days> games, with various optional flags"
+                  "to filters what replays are wanted.",
             inline=False
         )
         await context.reply(embed=embed)
