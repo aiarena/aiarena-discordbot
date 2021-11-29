@@ -17,9 +17,8 @@ class Help(commands.Cog, name="help"):
 
     async def add_role(self, member_id: int, role, guild):
         member = guild.get_member(member_id)
-        print(guild, member)
         if member is not None:
-            print(f"added role for user id {member_id}")
+            print(member)
             await member.add_roles(role)
         else:
             print(f"could not find user id {member_id} for this server.")
@@ -28,10 +27,7 @@ class Help(commands.Cog, name="help"):
     async def update_roles(self, context):
         guild = context.guild
 
-        # clear all users in both roles
-        # for role_id in config.ROLES_IDS[guild_id]:
-        #     role = discord.utils.get(context.guild.roles, id=role_id)
-        #     await self.clear_all_users(role)
+        # clear all users in donator role
         role = discord.utils.get(context.guild.roles, id=config.ROLES_IDS[guild.id][1])
         await self.clear_all_users(role)
 
@@ -39,31 +35,22 @@ class Help(commands.Cog, name="help"):
 
         patreon_users = get_patreon_users()
         patreon_users_discord = []
-        patreon_users_discord_names = []
         for patreon_user in patreon_users:
             if patreon_user in discord_users_dict.keys():
-                discord_name = await self.bot.fetch_user(discord_users_dict[patreon_user])
-                patreon_users_discord_names.append(discord_name.name)
                 patreon_users_discord.append(discord_users_dict[patreon_user])
 
         bot_authors = get_bot_author_users()
         bot_authors_discord = []
-        bot_authors_discord_names = []
         for bot_author in bot_authors:
             if bot_author in discord_users_dict.keys():
-                discord_name = await self.bot.fetch_user(discord_users_dict[bot_author])
-                bot_authors_discord_names.append(discord_name.name)
                 bot_authors_discord.append(discord_users_dict[bot_author])
-
-        print(f"adding patreon role to users: {patreon_users_discord_names}")
-        print(f"adding bot author roles to users: {bot_authors_discord_names}")
 
         print(guild)
         for role_id, users in zip(config.ROLES_IDS[guild.id], [bot_authors_discord, patreon_users_discord]):
             role = discord.utils.get(context.guild.roles, id=role_id)
             print(role)
             for user_id in users:
-                await self.add_role(int(user_id), role, guild)
+                await self.add_role(user_id, role, guild)
 
     @commands.command(name="help")
     async def help(self, context):
