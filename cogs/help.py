@@ -63,7 +63,7 @@ class Help(commands.Cog, name="help"):
             role = discord.utils.get(context.guild.roles, id=role_id)
             print(role)
             for user_id in users:
-                await self.add_role(user_id, role, guild)
+                await self.add_role(int(user_id), role, guild)
 
     @commands.command(name="help")
     async def help(self, context):
