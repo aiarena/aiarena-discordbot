@@ -17,7 +17,9 @@ class Help(commands.Cog, name="help"):
 
     async def add_role(self, member_id: int, role, guild):
         member = guild.get_member(member_id)
+        print(guild, member)
         if member is not None:
+            print(f"added role for user id {member_id}")
             await member.add_roles(role)
         else:
             print(f"could not find user id {member_id} for this server.")
@@ -57,7 +59,7 @@ class Help(commands.Cog, name="help"):
         print(f"adding bot author roles to users: {bot_authors_discord_names}")
 
         guild = context.guild
-
+        print(guild)
         for role_id, users in zip(config.ROLES_IDS[guild_id], [bot_authors_discord, patreon_users_discord]):
             role = discord.utils.get(context.guild.roles, id=role_id)
             print(role)
