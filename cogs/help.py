@@ -15,10 +15,10 @@ class Help(commands.Cog, name="help"):
         for member in role.members:
             await member.remove_roles(role)
 
-    async def add_role(self, member_id: int, role):
-        user = await self.bot.fetch_user(member_id)
-        if user is not None:
-            await user.add_roles(role)
+    async def add_role(self, member_id: int, role, guild):
+        member = guild.get_member(member_id)
+        if member is not None:
+            await member.add_roles(role)
         else:
             print(f"could not find user id {member_id} for this server.")
 
@@ -55,13 +55,15 @@ class Help(commands.Cog, name="help"):
 
         print(f"adding patreon role to users: {patreon_users_discord_names}")
         print(f"adding bot author roles to users: {bot_authors_discord_names}")
+
+        guild = context.guild
+
         for role_id, users in zip(config.ROLES_IDS[guild_id], [bot_authors_discord, patreon_users_discord]):
             role = discord.utils.get(context.guild.roles, id=role_id)
             print(role)
             for user_id in users:
-                await self.add_role(user_id, role)
-        print("got here")
-        
+                await self.add_role(user_id, role, guild)
+
     @commands.command(name="help")
     async def help(self, context):
         # Note that commands made only for the owner of the bot are not listed here.
