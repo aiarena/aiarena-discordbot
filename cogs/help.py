@@ -26,13 +26,13 @@ class Help(commands.Cog, name="help"):
 
     @commands.command(name="update_roles")
     async def update_roles(self, context):
-        guild_id = context.guild.id
+        guild = context.guild
 
         # clear all users in both roles
         # for role_id in config.ROLES_IDS[guild_id]:
         #     role = discord.utils.get(context.guild.roles, id=role_id)
         #     await self.clear_all_users(role)
-        role = discord.utils.get(context.guild.roles, id=config.ROLES_IDS[guild_id][1])
+        role = discord.utils.get(context.guild.roles, id=config.ROLES_IDS[guild.id][1])
         await self.clear_all_users(role)
 
         discord_users_dict = get_discord_users()
@@ -58,9 +58,8 @@ class Help(commands.Cog, name="help"):
         print(f"adding patreon role to users: {patreon_users_discord_names}")
         print(f"adding bot author roles to users: {bot_authors_discord_names}")
 
-        guild = context.guild
         print(guild)
-        for role_id, users in zip(config.ROLES_IDS[guild_id], [bot_authors_discord, patreon_users_discord]):
+        for role_id, users in zip(config.ROLES_IDS[guild.id], [bot_authors_discord, patreon_users_discord]):
             role = discord.utils.get(context.guild.roles, id=role_id)
             print(role)
             for user_id in users:
