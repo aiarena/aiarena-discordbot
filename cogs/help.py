@@ -16,7 +16,7 @@ class Help(commands.Cog, name="help"):
             await member.remove_roles(role)
 
     async def add_role(self, member_id: int, role):
-        user = discord.utils.get(self.bot.get_all_members(), id=member_id)
+        user = discord.utils.get(self.bot.get_all_members(), id=member_id, guild=role.guild)
         if user is not None:
             await user.add_roles(role)
         else:
@@ -59,7 +59,7 @@ class Help(commands.Cog, name="help"):
         for role_id, users in zip(config.ROLES_IDS[guild_id], [bot_authors_discord, patreon_users_discord]):
             role = discord.utils.get(context.guild.roles, id=role_id)
             for user_id in users:
-                await self.add_role(user_id, role)
+                await self.add_role(int(user_id), role)
 
     @commands.command(name="help")
     async def help(self, context):

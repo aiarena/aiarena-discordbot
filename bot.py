@@ -7,7 +7,9 @@ else:
 	import config
 
 
-bot = Bot(command_prefix=config.BOT_PREFIX)
+intents = discord.Intents.default()
+intents.members = True
+bot = Bot(command_prefix=config.BOT_PREFIX, intents=intents)
 
 message_hashes = {}
 
