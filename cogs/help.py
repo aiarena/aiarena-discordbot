@@ -24,40 +24,30 @@ class Help(commands.Cog, name="help"):
 
     @commands.command(name="update_roles")
     async def update_roles(self, context):
-        guild_id = context.guild.id
+        guild = context.guild
 
-        # clear all users in both roles
-        # for role_id in config.ROLES_IDS[guild_id]:
-        #     role = discord.utils.get(context.guild.roles, id=role_id)
-        #     await self.clear_all_users(role)
-        role = discord.utils.get(context.guild.roles, id=config.ROLES_IDS[guild_id][1])
+        # clear all users in donator role
+        role = discord.utils.get(context.guild.roles, id=config.ROLES_IDS[guild.id][1])
         await self.clear_all_users(role)
 
         discord_users_dict = get_discord_users()
 
         patreon_users = get_patreon_users()
         patreon_users_discord = []
-        patreon_users_discord_names = []
         for patreon_user in patreon_users:
             if patreon_user in discord_users_dict.keys():
-                discord_name = await self.bot.fetch_user(discord_users_dict[patreon_user])
-                patreon_users_discord_names.append(discord_name.name)
                 patreon_users_discord.append(discord_users_dict[patreon_user])
 
         bot_authors = get_bot_author_users()
         bot_authors_discord = []
-        bot_authors_discord_names = []
         for bot_author in bot_authors:
             if bot_author in discord_users_dict.keys():
-                discord_name = await self.bot.fetch_user(discord_users_dict[bot_author])
-                bot_authors_discord_names.append(discord_name.name)
                 bot_authors_discord.append(discord_users_dict[bot_author])
 
-        print(f"adding patreon role to users: {patreon_users_discord_names}")
-        print(f"adding bot author roles to users: {bot_authors_discord_names}")
-
-        for role_id, users in zip(config.ROLES_IDS[guild_id], [bot_authors_discord, patreon_users_discord]):
+        print(guild)
+        for role_id, users in zip(config.ROLES_IDS[guild.id], [bot_authors_discord, patreon_users_discord]):
             role = discord.utils.get(context.guild.roles, id=role_id)
+            print(role)
             for user_id in users:
                 await self.add_role(int(user_id), role)
 
