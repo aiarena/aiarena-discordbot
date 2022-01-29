@@ -6,8 +6,9 @@ if not os.path.isfile("config.py"):
 else:
 	import config
 
+
 intents = discord.Intents.default()
-intents.members = True  # Subscribe to the privileged members intent.
+intents.members = True
 bot = Bot(command_prefix=config.BOT_PREFIX, intents=intents)
 
 message_hashes = {}

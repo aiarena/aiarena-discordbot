@@ -15,11 +15,10 @@ class Help(commands.Cog, name="help"):
         for member in role.members:
             await member.remove_roles(role)
 
-    async def add_role(self, member_id: int, role, guild):
-        member = guild.get_member(member_id)
-        if member is not None:
-            print(member)
-            await member.add_roles(role)
+    async def add_role(self, member_id: int, role):
+        user = discord.utils.get(self.bot.get_all_members(), id=member_id, guild=role.guild)
+        if user is not None:
+            await user.add_roles(role)
         else:
             print(f"could not find user id {member_id} for this server.")
 
@@ -50,7 +49,7 @@ class Help(commands.Cog, name="help"):
             role = discord.utils.get(context.guild.roles, id=role_id)
             print(role)
             for user_id in users:
-                await self.add_role(user_id, role, guild)
+                await self.add_role(int(user_id), role)
 
     @commands.command(name="help")
     async def help(self, context):
