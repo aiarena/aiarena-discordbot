@@ -181,17 +181,18 @@ def get_bot_matches(bot_name: str, bot_id: str, days: int, only_losses: bool, ta
 
     try:
         num_files = 0
-        request_url = f"{config.MATCHES}?bot={bot_id}&limit=250&offset=250&ordering=-id"
+        request_url = f"{config.MATCHES}?bot={bot_id}&ordering=-id&limit=250"
         response = requests.get(request_url, headers=config.AUTH)
         if response.status_code != 200:
             raise APIException(f"Failed to get matches for bot id {bot_name}.", request_url, response)
         matches = json.loads(response.text)["results"]
         for match in matches:
             # is the match recent enough?
+            if match["started"] is None:
+                continue
             year, month, day = match["started"].split('-')
             day = day.split('T')[0]
             match_date = datetime.datetime(int(year), int(month), int(day))
-
             if match_date < start:
                 break
             # does the match have the appropriate tag?
@@ -206,7 +207,6 @@ def get_bot_matches(bot_name: str, bot_id: str, days: int, only_losses: bool, ta
             won = match["result"]["winner"] == bot_id
             if won and only_losses:
                 continue
-
             # download the replay and check if we have enough replays to early exit
             if download_replay(match["result"]["replay_file"], won, file_path):
                 num_files += 1
@@ -222,7 +222,7 @@ def get_bot_matches(bot_name: str, bot_id: str, days: int, only_losses: bool, ta
         for file in glob.glob(file_path + "/*.SC2Replay"):
             new_name = file.replace(".SC2Replay", f"___{tag}.SC2Replay")
             os.rename(file, new_name)
-
+    print(num_files)
     return file_path
 
 

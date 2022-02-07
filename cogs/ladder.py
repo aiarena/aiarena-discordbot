@@ -97,7 +97,7 @@ class Ladder(commands.Cog, name="urls"):
     async def gg(self, context):
         parser = argparse.ArgumentParser(prog='gg')
         parser.add_argument('bot_name', type=str, help='bot name')
-        parser.add_argument('days', type=int, help='number of days')
+        parser.add_argument('days', type=int, default=3, help='number of days')
         parser.add_argument('--limit', required=False, type=int, default=5, help='max number of replays to query')
         parser.add_argument('--losses', required=False, default=False, action='store_true')
         parser.add_argument('--tag', required=False, type=str, default="", help='tag to look for')
