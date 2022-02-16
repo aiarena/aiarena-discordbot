@@ -50,7 +50,9 @@ class Help(commands.Cog, name="help"):
             print(role)
             for user_id in users:
                 member = context.message.guild.get_member(int(user_id))
-                await member.add_roles(role)
+                if member is not None:
+                    # member will be None if the user is not in the guild
+                    await member.add_roles(role)
 
     @commands.command(name="help")
     async def help(self, context):
