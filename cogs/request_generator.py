@@ -23,7 +23,7 @@ def make_discord_users_request() -> str:
 
 
 def make_users_request() -> str:
-    return "https://aiarena.net/api/users/?limit=999999999"
+    return "https://aiarena.net/api/users/?is_active=true&limit=99999999"
 
 
 def make_active_bots_request() -> str:
