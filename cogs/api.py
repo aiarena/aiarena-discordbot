@@ -25,9 +25,8 @@ def get_patreon_users():
     request_url = make_users_request()
     response = requests.get(request_url, headers=config.AUTH)
     if response.status_code != 200:
-        raise APIException("Could not retrieve top 10 bots!", request_url, response)
+        raise APIException("Could not users!", request_url, response)
     users = json.loads(response.text)["results"]
-
     patrean_users = []
     for user in users:
         if user["patreon_level"] != "none":
@@ -46,7 +45,6 @@ def get_bot_author_users():
     active_bot_ids = []
     for bot in bots:
         active_bot_ids.append(bot["bot"])
-
     active_bot_author_ids = set()
     for bot_id in active_bot_ids:
         request_url = f"{config.BOT_INFO}{bot_id}/"
@@ -63,9 +61,8 @@ def get_discord_users():
     request_url = make_discord_users_request()
     response = requests.get(request_url, headers=config.AUTH)
     if response.status_code != 200:
-        raise APIException("Could not retrieve top 10 bots!", request_url, response)
+        raise APIException("Could not retrieve discord users", request_url, response)
     users = json.loads(response.text)["results"]
-
     discord_users = {}
     for user in users:
         discord_users[user["user"]] = user["uid"]
