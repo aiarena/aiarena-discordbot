@@ -10,7 +10,8 @@ else:
     import config
 
 from cogs.exceptions import APIException
-from cogs.request_generator import make_discord_users_request, make_users_request, make_active_bots_request
+from cogs.request_generator import make_discord_users_request, make_users_request, make_active_bots_request, \
+    make_unlinked_discord_uids_request
 
 # [name str] => bot id
 bot_ids = {}
@@ -33,6 +34,18 @@ def get_patreon_users():
             patrean_users.append(user["id"])
 
     return patrean_users
+
+def get_patreon_unlinked_uids():
+    request_url = make_unlinked_discord_uids_request()
+    response = requests.get(request_url, headers=config.AUTH)
+    if response.status_code != 200:
+        raise APIException("Could not get unlinked discord uids!", request_url, response)
+    results = json.loads(response.text)["results"]
+    discord_uids = []
+    for uid in results:
+        discord_uids.append(uid["discord_uid"])
+
+    return discord_uids
 
 
 def get_bot_author_users():

@@ -4,7 +4,7 @@ if not os.path.isfile("config.py"):
     sys.exit("'config.py' not found! Please add it and try again.")
 else:
     import config
-from cogs.api import get_discord_users, get_patreon_users, get_bot_author_users
+from cogs.api import get_discord_users, get_patreon_users, get_bot_author_users, get_patreon_unlinked_uids
 
 
 class Help(commands.Cog, name="help"):
@@ -37,6 +37,8 @@ class Help(commands.Cog, name="help"):
         for patreon_user in patreon_users:
             if patreon_user in discord_users_dict.keys():
                 patreon_users_discord.append(discord_users_dict[patreon_user])
+
+        patreon_users_discord += get_patreon_unlinked_uids()
 
         bot_authors = get_bot_author_users()
         bot_authors_discord = []
