@@ -25,6 +25,9 @@ def make_discord_users_request() -> str:
 def make_users_request() -> str:
     return "https://aiarena.net/api/users/?is_active=true&limit=99999999"
 
+def make_unlinked_discord_uids_request() -> str:
+    return "https://aiarena.net/api/patreon-unlinked-discord-uids/"
+
 
 def make_active_bots_request() -> str:
     return f"https://aiarena.net/api/competition-participations/?competition={config.SEASON}"
