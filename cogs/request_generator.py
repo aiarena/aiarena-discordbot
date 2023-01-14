@@ -1,9 +1,4 @@
-import os, sys
-
-if not os.path.isfile("config.py"):
-    sys.exit("'config.py' not found! Please add it and try again.")
-else:
-    import config
+import config
 
 
 def make_bot_info_request(bot_id: str) -> str:

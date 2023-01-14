@@ -1,9 +1,6 @@
-import os, sys, discord
+import discord
 from discord.ext import commands
-if not os.path.isfile("config.py"):
-    sys.exit("'config.py' not found! Please add it and try again.")
-else:
-    import config
+import config
 from cogs.api import get_discord_users, get_patreon_users, get_bot_author_users, get_patreon_unlinked_uids
 
 
@@ -23,7 +20,7 @@ class Help(commands.Cog, name="help"):
             print(f"could not find user id {member_id} for this server.")
 
     @commands.command(name="update_roles")
-    async def update_roles(self, context):
+    async def update_roles(self, context: discord.ext.commands.Context):
         guild = context.guild
 
         # clear all users in donator role
@@ -57,7 +54,7 @@ class Help(commands.Cog, name="help"):
                     await member.add_roles(role)
 
     @commands.command(name="help")
-    async def help(self, context):
+    async def help(self, context: discord.ext.commands.Context):
         # Note that commands made only for the owner of the bot are not listed here.
         embed = discord.Embed(
             title="Bot",
@@ -81,7 +78,7 @@ class Help(commands.Cog, name="help"):
         )
         embed.add_field(
             name="!bot <bot name>",
-            value="Shouws Bot information.",
+            value="Shows Bot information.",
             inline=False)
         embed.add_field(
             name="!trello",
@@ -102,5 +99,5 @@ class Help(commands.Cog, name="help"):
         await context.reply(embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(Help(bot))
+async def setup(bot):
+    await bot.add_cog(Help(bot))

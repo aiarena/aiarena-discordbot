@@ -1,9 +1,6 @@
-import argparse, discord, json, glob, os, requests, shutil, sys
+import argparse, discord, json, glob, requests, shutil
 from discord.ext import commands
-if not os.path.isfile("config.py"):
-    sys.exit("'config.py' not found! Please add it and try again.")
-else:
-    import config
+import config
 
 from cogs.exceptions import APIException
 import cogs.request_generator as ai_arena_urls
@@ -14,17 +11,18 @@ file_path = './replays/'  # insert file path
 race_dict = {"P": "Protoss", "T": "Terran", "Z": "Zerg", "R": "Random"}
 
 
-class Ladder(commands.Cog, name="urls"):
+class Ladder(commands.Cog, name="ladder"):
     def __init__(self, bot):
         self.bot = bot
 
-    @staticmethod
-    async def get_discord_name(self, context, discord_id: str):
-        discord_user = await context.message.guild.get_member(discord_id)
-        return discord_user.nick
+    # Unused, can be removed?
+    # @staticmethod
+    # async def get_discord_name(self, context: discord.ext.commands.Context, discord_id: str):
+    #     discord_user = await context.message.guild.get_member(discord_id)
+    #     return discord_user.nick
 
     @staticmethod
-    async def send_files(context, directory: str):
+    async def send_files(context: discord.ext.commands.Context, directory: str):
         if len(glob.glob(directory + '/*.SC2Replay')) == 0:
             await context.message.author.send(f"Could not find any SC2 replays with the criteria: "
                                               f"{context.message.content}")
@@ -39,7 +37,7 @@ class Ladder(commands.Cog, name="urls"):
         shutil.rmtree(directory)
 
     @commands.command(name="top10")
-    async def top10(self, context):
+    async def top10(self, context: discord.ext.commands.Context):
         request_url = ai_arena_urls.make_top_ten_bots_request()
         response = requests.get(ai_arena_urls.make_top_ten_bots_request(), headers=config.AUTH)
         if response.status_code != 200:
@@ -67,7 +65,7 @@ class Ladder(commands.Cog, name="urls"):
         await context.reply(embed=embed)
 
     @commands.command(name="top16")
-    async def top16(self, context):
+    async def top16(self, context: discord.ext.commands.Context):
         request_url = ai_arena_urls.make_top_sixteen_bots_request()
         response = requests.get(request_url, headers=config.AUTH)
         if response.status_code != 200:
@@ -94,7 +92,7 @@ class Ladder(commands.Cog, name="urls"):
         await context.reply(embed=embed)
 
     @commands.command(name="gg")
-    async def gg(self, context):
+    async def gg(self, context: discord.ext.commands.Context):
         parser = argparse.ArgumentParser(prog='gg')
         parser.add_argument('bot_name', type=str, help='bot name')
         parser.add_argument('days', type=int, default=3, help='number of days')
@@ -114,11 +112,11 @@ class Ladder(commands.Cog, name="urls"):
         await self.send_files(context, replays)
 
     @commands.command(name="bot")
-    async def get_bot(self, context):
-        if len(str(context.message.content).split(" ")) != 2:
+    async def get_bot(self, context: discord.ext.commands.Context):
+        if len(context.message.content.split(" ")) != 2:
             raise Exception("Usage: !bot <bot_name> ")
 
-        bot_name = str(context.message.content).split(" ")[1]
+        bot_name = context.message.content.split(" ")[1]
         bot_id = ai_arena_api.get_bot_id_by_name(bot_name)
         bot_info = ai_arena_api.get_bot_info(bot_id)
         elo_change = ai_arena_api.get_elo_change(bot_name, bot_id, bot_info["bot_zip_updated"])
@@ -144,8 +142,8 @@ class Ladder(commands.Cog, name="urls"):
             author_name = author_name.name + " - Discord"
 
         embed = discord.Embed(
-            title=f"{bot_name}",
-            description="Bot Information",
+            title="Bot Information",
+            description=f"{bot_name}",
             color=0x00FF00
         )
         embed.add_field(
@@ -155,7 +153,7 @@ class Ladder(commands.Cog, name="urls"):
         )
         embed.add_field(
             name="Race",
-            value=race_dict[bot_info["plays_race"]],
+            value=race_dict[bot_info["plays_race"]['label']],
             inline=False
         )
         embed.add_field(
@@ -179,12 +177,12 @@ class Ladder(commands.Cog, name="urls"):
             inline=False
         )
         embed.add_field(
-            name="Downloadable?",
+            name="Downloadable",
             value=bot_info["bot_zip_publicly_downloadable"],
             inline=False
         )
         await context.reply(embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(Ladder(bot))
+async def setup(bot):
+    await bot.add_cog(Ladder(bot))

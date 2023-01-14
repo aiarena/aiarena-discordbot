@@ -1,13 +1,8 @@
 import shutil
 
-import discord, datetime, glob, json, os, random, requests, string, sys
+import datetime, glob, json, os, random, requests, string
 from pathlib import Path
-from discord.ext import commands
-
-if not os.path.isfile("config.py"):
-    sys.exit("'config.py' not found! Please add it and try again.")
-else:
-    import config
+import config
 
 from cogs.exceptions import APIException
 from cogs.request_generator import make_discord_users_request, make_users_request, make_active_bots_request, \
