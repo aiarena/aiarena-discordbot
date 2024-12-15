@@ -1,0 +1,32 @@
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: discord
+  name: bot
+  labels:
+    app: bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bot
+  template:
+    metadata:
+      labels:
+        app: bot
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: bot
+          image: aiarena/discordbot
+          command: ["sh", "-c", "cp /etc/discordbot/config/config.py /root/aiarena-discordbot/config.py; /usr/local/bin/python ./bot.py"]
+          volumeMounts:
+            - name: config
+              mountPath: /etc/discordbot/config
+              readOnly: true
+      volumes:
+        - name: config
+          secret:
+            secretName: config
+ 
