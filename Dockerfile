@@ -1,23 +1,15 @@
 FROM python:3.8-slim
-MAINTAINER AI Arena <staff@aiarena.net>
+LABEL org.opencontainers.image.authors="staff@aiarena.net"
 
-USER root
-WORKDIR /root/
+WORKDIR /bot/
 
-# Update system
-RUN apt-get update && apt-get upgrade --assume-yes --quiet=2
-RUN apt-get install --assume-yes --no-install-recommends --no-show-upgraded \
-    wget \
-    unzip
+COPY bot.sh ./
+RUN chmod +x bot.sh
 
-# download bot and install requirements
-RUN wget -O aiarena-discordbot.zip https://github.com/aiarena/aiarena-discordbot/archive/refs/heads/master.zip
-RUN unzip aiarena-discordbot.zip -d /tmp/aiarena-discordbot/
-RUN mv /tmp/aiarena-discordbot/aiarena-discordbot-master/ /root/aiarena-discordbot/
-RUN rm -r /tmp/aiarena-discordbot/
-RUN pip install -r /root/aiarena-discordbot/requirements.txt
+COPY requirements.txt ./
+RUN pip install -r requirements.txt
 
-WORKDIR /root/aiarena-discordbot/
+COPY *.py ./
+COPY cogs ./cogs/
 
-# Run the bot
-ENTRYPOINT [ "/usr/local/bin/python", "./bot.py" ]
+ENTRYPOINT [ "/bin/bash", "-c", "./bot.sh" ]

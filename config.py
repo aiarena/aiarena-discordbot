@@ -1,10 +1,10 @@
-# rename file to `config.py` and fill in appropriate fields
+# Set API_TOKEN to the AI Arena token from https://aiarena.net/profile
+# Set APPLICATION_ID to the application id of the Discord bot from https://discord.com/developers/applications/<bot-application-id>/information
+# Set TOKEN to the token of the Discord bot from https://discord.com/developers/applications/<bot-application-id>/bot
+# Set SEASON to the id of a competition in AI Arena
 
 # Can be multiple prefixes, like this: ("!", "?")
 BOT_PREFIX = ("!")
-TOKEN = "redacted"
-API_TOKEN = "redacted"
-APPLICATION_ID = "redacted"
 OWNERS = [1234]
 BLACKLIST = []
 BOT_DISCORD_ID = 1234
@@ -18,7 +18,6 @@ STARTUP_COGS = [
 REPLAYS_DIR = "replays/"
 
 # urls
-SEASON = 8
 LADDER_RANKS = f"https://aiarena.net/api/competition-participations/?competition={SEASON}&ordering=-elo"
 BOT_INFO = "https://aiarena.net/api/bots/"
 USER_INFO = "https://aiarena.net/api/users/"

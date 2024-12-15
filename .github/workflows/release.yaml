@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+
+  Release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Select release version
+        id: version
+        run: printf 'tag=${{ vars.DOCKERHUB_USERNAME }}/discordbot:%(%Y.%m.%d-%H.%M)T' >> $GITHUB_OUTPUT
+
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Publish Docker image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ${{ steps.version.outputs.tag }}
+
+      - name: Update Kubernetes descriptors
+        run: |
+          cp -vr kubernetes ${{ runner.temp }}
+          echo 'Setting version ${{ steps.version.outputs.tag }} in deployment descriptors'
+          sed -i -e 's|aiarena/discordbot|${{ steps.version.outputs.tag }}|g' ${{ runner.temp }}/kubernetes/deployment.yaml
+          git fetch
+          git switch kubernetes
+          rm -r ./*
+          cp -vr ${{ runner.temp }}/kubernetes/* .
+          git config --global user.name 'AI Arena'
+          git config --global user.email 'staff@aiarena.net'
+          git add --all
+          git commit -m 'Release ${{ steps.version.outputs.tag }}'
+          git push
