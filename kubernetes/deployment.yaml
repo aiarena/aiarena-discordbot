@@ -1,0 +1,34 @@
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: discord
+  name: bot
+  labels:
+    app: bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bot
+  template:
+    metadata:
+      labels:
+        app: bot
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: bot
+          image: aiarena/discordbot
+          env:
+            - name: SECRETS
+              value: "/etc/secrets"
+          volumeMounts:
+            - name: secrets
+              mountPath: /etc/secrets
+              readOnly: true
+      volumes:
+        - name: secrets
+          secret:
+            secretName: config
+ 
