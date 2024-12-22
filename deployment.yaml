@@ -19,7 +19,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: bot
-          image: aiarena/discordbot
+          image: aiarenadevops/discordbot:2024.12.22-14.06
           env:
             - name: SECRETS
               value: "/etc/secrets"
