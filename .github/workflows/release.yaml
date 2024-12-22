@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Select release version
         id: version
-        run: printf 'tag=${{ vars.DOCKERHUB_USERNAME }}/discordbot:%(%Y.%m.%d-%H.%M)T' >> $GITHUB_OUTPUT
+        run: printf 'tag=aiarena/discordbot:%(%Y.%m.%d-%H.%M)T' >> $GITHUB_OUTPUT
 
       - name: Check out repository code
         uses: actions/checkout@v4
