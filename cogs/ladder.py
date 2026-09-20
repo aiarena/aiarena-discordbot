@@ -121,19 +121,7 @@ class Ladder(commands.Cog, name="ladder"):
         bot_info = ai_arena_api.get_bot_info(bot_id)
         elo_change = ai_arena_api.get_elo_change(bot_name, bot_id, bot_info["bot_zip_updated"])
 
-        # Have to linearly traverse the competition participants in descending ELO order to get this bot's rank
-        # The API could be improved to prevent having to do this.
-        response = requests.get(config.LADDER_RANKS, headers=config.AUTH)
-        if response.status_code != 200:
-            raise APIException("Failed to look up bot elo and rank", config.LADDER_RANKS, response)
-        ladder_info = json.loads(response.text)
-        bot_info["rank"] = "unknown"
-        bot_info["elo"] = "unknown"
-        for i, info in enumerate(ladder_info["results"]):
-            if info["bot"] == bot_id:
-                bot_info["elo"] = info["elo"]
-                bot_info["rank"] = i + 1
-                break
+        bot_info["rank"], bot_info["elo"] = ai_arena_api.get_bot_rank_and_elo(bot_id)
 
         author_name = bot_info["author_info"][0] + " - AI Arena"
         # author on discord, get discord name

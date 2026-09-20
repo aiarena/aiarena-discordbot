@@ -1,3 +1,4 @@
+import base64
 import shutil
 
 import datetime, glob, json, os, random, requests, string
@@ -123,6 +124,125 @@ def get_bot_info(bot_id: str) -> dict:
     bot_info = json.loads(response.text)
     bot_info["author_info"] = get_author_name_by_id(bot_info["user"])
     return bot_info
+
+
+def _to_global_id(type_name: str, object_id: str) -> str:
+    value = f"{type_name}:{object_id}".encode("utf-8")
+    return base64.b64encode(value).decode("ascii")
+
+
+def get_bot_rank_and_elo(bot_id: str):
+    """
+    Return the bot's rank and ELO from the relevant active competition.
+
+    Prefer the configured SEASON when the bot is active in it. If the SEASON
+    configuration is stale, fall back to the bot's newest active competition.
+    The competition participant list comes from the same GraphQL resolver used
+    by the current frontend, so rank ordering matches the website.
+    """
+    bot_global_id = _to_global_id("BotType", bot_id)
+
+    participations_query = """
+        query BotCompetitions($botId: ID!) {
+          node(id: $botId) {
+            ... on BotType {
+              competitionParticipations(active: true, first: 20) {
+                edges {
+                  node {
+                    competition {
+                      id
+                      databaseId
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+    """
+    response = requests.post(
+        config.GRAPHQL,
+        headers=config.AUTH,
+        json={"query": participations_query, "variables": {"botId": bot_global_id}},
+    )
+    if response.status_code != 200:
+        raise APIException("Failed to look up bot ELO and rank", config.GRAPHQL, response)
+
+    payload = json.loads(response.text)
+    if payload.get("errors"):
+        raise APIException("Failed to look up bot ELO and rank", config.GRAPHQL, response)
+
+    node = payload.get("data", {}).get("node")
+    if not node:
+        return "unknown", "unknown"
+
+    active_participations = node.get("competitionParticipations", {}).get("edges", [])
+    if not active_participations:
+        return "unknown", "unknown"
+
+    selected = active_participations[0]["node"]["competition"]
+    for edge in active_participations:
+        competition = edge["node"]["competition"]
+        if str(competition["databaseId"]) == str(config.SEASON):
+            selected = competition
+            break
+
+    participants_query = """
+        query CompetitionRank($competitionId: ID!, $after: String) {
+          node(id: $competitionId) {
+            ... on CompetitionType {
+              participants(first: 100, after: $after) {
+                edges {
+                  node {
+                    elo
+                    bot {
+                      databaseId
+                    }
+                  }
+                }
+                pageInfo {
+                  hasNextPage
+                  endCursor
+                }
+              }
+            }
+          }
+        }
+    """
+
+    after = None
+    rank = 0
+    while True:
+        response = requests.post(
+            config.GRAPHQL,
+            headers=config.AUTH,
+            json={
+                "query": participants_query,
+                "variables": {"competitionId": selected["id"], "after": after},
+            },
+        )
+        if response.status_code != 200:
+            raise APIException("Failed to look up bot ELO and rank", config.GRAPHQL, response)
+
+        payload = json.loads(response.text)
+        if payload.get("errors"):
+            raise APIException("Failed to look up bot ELO and rank", config.GRAPHQL, response)
+
+        competition = payload.get("data", {}).get("node")
+        if not competition:
+            return "unknown", "unknown"
+
+        participants = competition["participants"]
+        for edge in participants["edges"]:
+            rank += 1
+            participant = edge["node"]
+            if str(participant["bot"]["databaseId"]) == str(bot_id):
+                return rank, participant["elo"]
+
+        page_info = participants["pageInfo"]
+        if not page_info["hasNextPage"]:
+            return "unknown", "unknown"
+        after = page_info["endCursor"]
 
 
 def download_replay(replay_file: str, won: bool, file_path: str):

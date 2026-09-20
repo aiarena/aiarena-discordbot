@@ -19,6 +19,7 @@ REPLAYS_DIR = "replays/"
 
 # urls
 LADDER_RANKS = f"https://aiarena.net/api/competition-participations/?competition={SEASON}&ordering=-elo&limit=99999999"
+GRAPHQL = "https://aiarena.net/graphql/"
 BOT_INFO = "https://aiarena.net/api/bots/"
 USER_INFO = "https://aiarena.net/api/users/"
 DISCORD_USER_INFO = "https://aiarena.net/api/discord-users/"
